@@ -1,0 +1,64 @@
+{
+  "name": "Prompt",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "title": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Coding",
+        "Debugging",
+        "Research",
+        "Project Ideas",
+        "Documentation",
+        "PPT",
+        "UI/UX",
+        "Resume",
+        "Interview",
+        "Hackathon",
+        "Learning",
+        "SQL",
+        "GitHub",
+        "Testing"
+      ]
+    },
+    "prompt_text": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "title",
+    "category",
+    "prompt_text"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

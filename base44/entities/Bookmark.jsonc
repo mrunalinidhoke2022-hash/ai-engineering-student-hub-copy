@@ -1,0 +1,57 @@
+{
+  "name": "Bookmark",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "item_type": {
+      "type": "string",
+      "enum": [
+        "tool",
+        "learning_path",
+        "coding_problem",
+        "prompt",
+        "problem_statement"
+      ]
+    },
+    "item_id": {
+      "type": "string"
+    },
+    "item_name": {
+      "type": "string"
+    },
+    "folder": {
+      "type": "string",
+      "enum": [
+        "My AI Tools",
+        "Coding",
+        "Hackathon",
+        "Research",
+        "Projects",
+        "Design"
+      ],
+      "default": "My AI Tools"
+    }
+  },
+  "required": [
+    "item_type",
+    "item_id",
+    "item_name"
+  ],
+  "rls": {
+    "read": {
+      "created_by_id": "{{user.id}}"
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

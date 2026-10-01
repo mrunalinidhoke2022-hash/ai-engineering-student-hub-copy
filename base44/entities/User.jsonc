@@ -1,0 +1,58 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "user",
+        "admin"
+      ],
+      "default": "user"
+    },
+    "year": {
+      "type": "string",
+      "enum": [
+        "1st Year",
+        "2nd Year",
+        "3rd Year",
+        "Final Year",
+        "Graduate"
+      ]
+    },
+    "branch": {
+      "type": "string"
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "interests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "learning_goals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "beginner_mode": {
+      "type": "boolean",
+      "default": true
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "en",
+        "hi",
+        "mr"
+      ],
+      "default": "en"
+    }
+  }
+}

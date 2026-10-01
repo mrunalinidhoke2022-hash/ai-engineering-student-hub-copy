@@ -1,0 +1,177 @@
+/**
+ * Curated guides behind the quick buttons under the home search box.
+ * Each guide always has content, so tapping a button can never land on an empty page.
+ */
+export const QUICK_TOPICS = [
+  {
+    slug: "build-chatbot",
+    chip: "Build Chatbot",
+    title: "Build Your First Chatbot",
+    tagline: "Turn an idea into a working AI assistant you can demo.",
+    what: "A chatbot is two parts: a brain that decides the answer and an interface where people type. The brain can be an LLM API (OpenAI, Google AI Studio, Anthropic) or a simple rule engine. The interface is usually a chat box in a web page. Beginners win fastest by starting with prompt-only answers, then adding your own documents so the bot answers from real college or project data.",
+    roadmap: [
+      { title: "Pick the one job it does", detail: "Decide the single thing your bot must answer well — college FAQs, coding doubts, or questions from a PDF. Narrow beats clever." },
+      { title: "Choose a build path", detail: "No-code tools give a working bot in an hour. Code (Python + an LLM API + Streamlit) gives you a project you can explain in an interview." },
+      { title: "Collect the knowledge", detail: "Gather the notes, PDFs or FAQs it should answer from. Split them into small chunks so the bot can find the right piece." },
+      { title: "Wire up the brain", detail: "Write a system prompt that fixes its role and rules, then send the user's question plus the matching chunks to the model." },
+      { title: "Build the chat interface", detail: "A simple message list and input box is enough. Show a typing state while the answer loads." },
+      { title: "Add memory", detail: "Keep the last few messages in the request so follow-up questions make sense, and store each session in a database or file." },
+      { title: "Test with 20 real questions", detail: "Ask what your classmates would ask. Note every wrong answer and fix the prompt or the source chunks." },
+      { title: "Ship the demo", detail: "Deploy it, add a README with screenshots, and record a two-minute walkthrough video as a backup for judging." },
+    ],
+    guidance: [
+      "Get a prompt-only version working before you add document search — a broken retrieval pipeline hides simple prompt mistakes.",
+      "Keep API keys in environment variables, never in your code or a public repo.",
+      "If your bot is unsure, make it say so. Judges and users forgive 'I don't know' and never forgive confidently wrong answers.",
+      "Cap the answer length and the number of past messages you resend, or your demo will run out of free credits mid-presentation.",
+      "Show your sources when the answer comes from a document — it turns a black box into something people trust.",
+    ],
+    internal: [
+      { label: "AI Tools Directory", to: "/ai-tools" },
+      { label: "Prompt Library", to: "/prompts" },
+      { label: "Project Roadmap Generator", to: "/project-builder" },
+      { label: "Ask AI Mentor", to: "/mentor" },
+    ],
+    links: [
+      { label: "OpenAI Platform docs", href: "https://platform.openai.com/docs", note: "Models, API keys and pricing for LLM apps." },
+      { label: "Google AI Studio", href: "https://aistudio.google.com", note: "Free-tier API keys and prompt testing." },
+      { label: "LangChain Python docs", href: "https://python.langchain.com", note: "Retrieval, memory and tool use for chatbots." },
+      { label: "Streamlit", href: "https://streamlit.io", note: "Fastest way to put a Python chat UI online." },
+      { label: "Hugging Face", href: "https://huggingface.co", note: "Open models and datasets if you want to self-host." },
+    ],
+    videos: [
+      { label: "Build a chatbot with Python and an LLM API", url: "https://www.youtube.com/results?search_query=build+a+chatbot+with+python+and+openai+api" },
+      { label: "Retrieval-augmented generation (chat with your PDF)", url: "https://www.youtube.com/results?search_query=rag+chatbot+tutorial+chat+with+pdf" },
+      { label: "Deploy a Streamlit chat app", url: "https://www.youtube.com/results?search_query=streamlit+chat+app+tutorial" },
+    ],
+  },
+  {
+    slug: "hackathon-prep",
+    chip: "Hackathon Prep",
+    title: "Hackathon Preparation",
+    tagline: "From picking the right event to a demo that wins the room.",
+    what: "Most hackathons run 24 to 36 hours and are judged on problem relevance, a working demo, how clearly you present it, and teamwork. Teams lose not because the idea was weak but because they ran out of time integrating, or pitched a half-built feature instead of a finished small one. Preparation is mostly about narrowing scope early and protecting the last two hours for the pitch.",
+    roadmap: [
+      { title: "Choose the event", detail: "Check the theme, eligibility, team size and past winning projects before you register — a theme you already know beats a bigger prize pool." },
+      { title: "Build the team", detail: "Three or four people with different strengths: frontend, backend or AI, design, and someone who enjoys presenting." },
+      { title: "Lock the problem in hour one", detail: "Pick a problem judges can verify, drawn from the official problem statement list if the event provides one." },
+      { title: "Scope to one demo-able core", detail: "Write the single flow you will show on stage and cut everything else. Everything else is a slide." },
+      { title: "Split work and freeze the interface", detail: "Agree on the data shape between frontend and backend in the first hour, then build in parallel in one shared repository." },
+      { title: "Integrate early, then stop", detail: "Get the full flow working end to end before adding features. After that, only fix what is broken." },
+      { title: "Rehearse the three-minute pitch", detail: "Problem, live demo, impact, one slide of tech. Rehearse it twice out loud with a timer." },
+      { title: "Submit early", detail: "Upload the repository, README and screenshots an hour before the deadline, with a recorded demo video as backup." },
+    ],
+    guidance: [
+      "Pick a problem you can show in under three minutes. Ambitious projects that demo as a loading spinner score badly.",
+      "Keep a recorded demo video from the moment your flow first works — it saves you if the network fails on stage.",
+      "Do not learn a new framework at hour 20. Use what the team already knows.",
+      "Judges reward impact and clarity over the number of features. Show one metric instead of five claims.",
+      "Decide a sleep plan early; a tired team at hour 30 writes bugs faster than features.",
+    ],
+    internal: [
+      { label: "Hackathon Hub", to: "/hackathon-hub" },
+      { label: "Project Roadmap Generator", to: "/project-builder" },
+      { label: "My Toolkit", to: "/toolkit" },
+      { label: "Learning Paths", to: "/learn" },
+    ],
+    links: [
+      { label: "Devpost", href: "https://devpost.com", note: "Find hackathons and see past winning projects." },
+      { label: "Unstop", href: "https://unstop.com", note: "Indian college hackathons and competitions." },
+      { label: "Devfolio", href: "https://devfolio.co", note: "Hackathons and builder communities." },
+      { label: "Major League Hacking", href: "https://mlh.io", note: "Season calendar of student hackathons." },
+      { label: "GitHub", href: "https://github.com", note: "Shared repo, README and demo video hosting." },
+    ],
+    videos: [
+      { label: "Hackathon tips for first-time participants", url: "https://www.youtube.com/results?search_query=hackathon+tips+for+beginners" },
+      { label: "How to pitch a hackathon project", url: "https://www.youtube.com/results?search_query=how+to+pitch+a+hackathon+project" },
+      { label: "Winning hackathon demo walkthroughs", url: "https://www.youtube.com/results?search_query=winning+hackathon+project+demo" },
+    ],
+  },
+  {
+    slug: "ppt-generator",
+    chip: "PPT Generator",
+    title: "Presentations That Look Ready",
+    tagline: "A clean, judge-ready deck in under an hour.",
+    what: "AI slide tools can turn an outline into a formatted deck in minutes, but the outline is still your job — the tool only styles what you feed it. A strong technical deck tells one story: the problem, what you built, it working, the result, and what comes next. One idea per slide, six lines maximum, and a real screenshot wherever you would normally write an explanation.",
+    roadmap: [
+      { title: "Write the story first", detail: "On paper, list the five beats: problem, solution, demo, results, future scope. No design yet." },
+      { title: "Turn each beat into slides", detail: "One idea per slide with a headline that states the takeaway, not the topic name." },
+      { title: "Generate the first draft", detail: "Paste your outline into an AI slide tool to get structure and layout, then edit ruthlessly." },
+      { title: "Apply one template", detail: "One template, two fonts, three colours for the whole deck. Inconsistency reads as carelessness." },
+      { title: "Replace generic graphics", detail: "Swap stock clipart for your architecture diagram, screenshots and result charts." },
+      { title: "Add numbers", detail: "Metrics beat adjectives: response time, accuracy, cost, users, time saved." },
+      { title: "Cut to the time limit", detail: "Roughly one slide per minute of speaking, plus a title and closing slide." },
+      { title: "Export and rehearse", detail: "Save a PDF and keep it offline as a backup, then present it out loud twice." },
+    ],
+    guidance: [
+      "Never paste paragraphs. If it can be said, say it; if it must be read, shorten it.",
+      "Keep body text large enough to read from the back of a classroom, and favour dark slides for screenshots.",
+      "Label every result slide with its source or test condition, especially in academic presentations.",
+      "Check your event's rules on AI-generated content and disclose how you used it — many hackathons now require it.",
+      "A consistent deck with plain slides beats a flashy deck with mismatched colours every time.",
+    ],
+    internal: [
+      { label: "Prompt Library · PPT", to: "/prompts" },
+      { label: "AI Tools Directory", to: "/ai-tools" },
+      { label: "Project Roadmap Generator", to: "/project-builder" },
+    ],
+    links: [
+      { label: "Gamma", href: "https://gamma.app", note: "Generate a deck from an outline in minutes." },
+      { label: "Canva", href: "https://www.canva.com", note: "Templates, diagrams and presentation export." },
+      { label: "Slidesgo", href: "https://slidesgo.com", note: "Free academic and technical slide templates." },
+      { label: "Google Slides", href: "https://slides.google.com", note: "Real-time editing with your team." },
+      { label: "Unsplash", href: "https://unsplash.com", note: "Free high-quality images for slides." },
+    ],
+    videos: [
+      { label: "Generate a presentation with Gamma", url: "https://www.youtube.com/results?search_query=gamma+app+presentation+tutorial" },
+      { label: "Presentation design tips for students", url: "https://www.youtube.com/results?search_query=presentation+design+tips+for+students" },
+      { label: "How to present a technical project", url: "https://www.youtube.com/results?search_query=how+to+present+a+technical+project" },
+    ],
+  },
+  {
+    slug: "learn-python",
+    chip: "Learn Python",
+    title: "Learn Python in 8 Stages",
+    tagline: "Zero to project-ready, in a order that actually works.",
+    what: "Python is the default first language for AI, data work, automation and college projects, and its syntax keeps beginners focused on logic instead of punctuation. The trap is watching courses without writing code. Follow the stages below, write every example yourself, and finish three small projects before you pick a specialisation.",
+    roadmap: [
+      { title: "Set up your machine", detail: "Install Python 3 and VS Code, then run a two-line script from the terminal. Getting this working is step one, not a formality." },
+      { title: "Basics", detail: "Variables, numbers, strings, input and output, and if/else. Write ten tiny programs from scratch." },
+      { title: "Loops and functions", detail: "for, while, and defining your own functions with parameters and return values. Solve twenty small problems." },
+      { title: "Collections", detail: "Lists, tuples, dictionaries and sets, plus slicing and comprehensions. These carry most real-world code." },
+      { title: "Files and errors", detail: "Read and write text and CSV files, and handle failures with try/except instead of letting the program crash." },
+      { title: "Modules and environments", detail: "pip, virtual environments, and your first library — requests, or pandas if you are heading towards data." },
+      { title: "Object-oriented Python and one real project", detail: "Classes and objects, then build something complete: a marks analyser, expense tracker or quiz app." },
+      { title: "Pick a direction", detail: "AI and ML (NumPy, pandas, scikit-learn), web (Flask or FastAPI), or automation (openpyxl, Selenium) — then build one project in it." },
+    ],
+    guidance: [
+      "45 focused minutes daily beats a weekend marathon. Consistency is what makes syntax stick.",
+      "Type every example by hand. Copy-pasting code builds the illusion of understanding.",
+      "When stuck, debug with print statements before asking — reading your own output is the core skill.",
+      "Finish three small projects instead of starting ten. A finished beginner project teaches more than tutorials do.",
+      "Avoid tutorial hell: after each topic, close the video and rebuild the example from memory.",
+    ],
+    internal: [
+      { label: "Learning Paths", to: "/learn" },
+      { label: "Coding Practice", to: "/coding-practice" },
+      { label: "Prompt Library · Coding", to: "/prompts" },
+      { label: "Ask AI Mentor", to: "/mentor" },
+    ],
+    links: [
+      { label: "Python.org", href: "https://www.python.org", note: "Official downloads and documentation." },
+      { label: "The Python Tutorial", href: "https://docs.python.org/3/tutorial/", note: "The official beginner tutorial." },
+      { label: "W3Schools Python", href: "https://www.w3schools.com/python/", note: "Quick syntax reference with runnable examples." },
+      { label: "Kaggle Learn", href: "https://www.kaggle.com/learn", note: "Short free Python and data courses." },
+      { label: "Real Python", href: "https://realpython.com", note: "Deeper articles once the basics click." },
+    ],
+    videos: [
+      { label: "Python full course for beginners", url: "https://www.youtube.com/results?search_query=python+for+beginners+full+course" },
+      { label: "Beginner Python project ideas", url: "https://www.youtube.com/results?search_query=python+projects+for+beginners" },
+      { label: "Python for data science", url: "https://www.youtube.com/results?search_query=python+for+data+science+tutorial" },
+    ],
+  },
+];
+
+export function findQuickTopic(slug) {
+  return QUICK_TOPICS.find((topic) => topic.slug === slug) || null;
+}

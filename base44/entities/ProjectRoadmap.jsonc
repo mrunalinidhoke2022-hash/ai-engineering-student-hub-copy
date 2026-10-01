@@ -1,0 +1,87 @@
+{
+  "name": "ProjectRoadmap",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "idea": {
+      "type": "string"
+    },
+    "problem_definition": {
+      "type": "string"
+    },
+    "target_users": {
+      "type": "string"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tech_stack": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "architecture": {
+      "type": "string"
+    },
+    "database": {
+      "type": "string"
+    },
+    "ai_tools": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "apis": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "development_steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "testing": {
+      "type": "string"
+    },
+    "deployment": {
+      "type": "string"
+    },
+    "documentation": {
+      "type": "string"
+    },
+    "presentation": {
+      "type": "string"
+    },
+    "future_scope": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "idea"
+  ],
+  "rls": {
+    "read": {
+      "created_by_id": "{{user.id}}"
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

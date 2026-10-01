@@ -1,0 +1,86 @@
+{
+  "name": "ProblemStatement",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "title": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "AI",
+        "Agriculture",
+        "Healthcare",
+        "Education",
+        "FinTech",
+        "Cybersecurity",
+        "Environment",
+        "Smart City",
+        "IoT",
+        "Robotics",
+        "Social Impact",
+        "Web Development",
+        "Mobile Development"
+      ]
+    },
+    "problem": {
+      "type": "string"
+    },
+    "target_users": {
+      "type": "string"
+    },
+    "existing_solutions": {
+      "type": "string"
+    },
+    "research_resources": {
+      "type": "string"
+    },
+    "possible_technologies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "data_requirements": {
+      "type": "string"
+    },
+    "complexity": {
+      "type": "string",
+      "enum": [
+        "Beginner",
+        "Intermediate",
+        "Advanced"
+      ]
+    },
+    "suggested_next_steps": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "category",
+    "problem"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

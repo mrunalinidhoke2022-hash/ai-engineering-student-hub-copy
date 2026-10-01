@@ -1,0 +1,53 @@
+{
+  "name": "Announcement",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "title": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Site Update",
+        "New Feature",
+        "Hackathon",
+        "Deadline",
+        "Event",
+        "General"
+      ],
+      "default": "Site Update"
+    },
+    "link": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "message"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

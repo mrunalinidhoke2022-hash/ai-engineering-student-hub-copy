@@ -1,0 +1,140 @@
+{
+  "name": "Tool",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "General AI",
+        "Coding",
+        "Research",
+        "Design",
+        "Presentations",
+        "Image Generation",
+        "Video Generation",
+        "Audio",
+        "Writing",
+        "Productivity",
+        "Data Science",
+        "Developer Tools",
+        "Cloud"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "level": {
+      "type": "string",
+      "enum": [
+        "Beginner",
+        "Intermediate",
+        "Advanced"
+      ],
+      "default": "Beginner"
+    },
+    "useful_for": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "pricing": {
+      "type": "string",
+      "enum": [
+        "Free",
+        "Freemium",
+        "Paid"
+      ],
+      "default": "Freemium"
+    },
+    "official_url": {
+      "type": "string"
+    },
+    "docs_url": {
+      "type": "string"
+    },
+    "verified": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_verified": {
+      "type": "string",
+      "format": "date"
+    },
+    "what_is": {
+      "type": "string"
+    },
+    "why_use": {
+      "type": "string"
+    },
+    "what_can_you_do": {
+      "type": "string"
+    },
+    "how_to_start": {
+      "type": "string"
+    },
+    "tutorial": {
+      "type": "string"
+    },
+    "example_prompts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "prompt_formula_example": {
+      "type": "string"
+    },
+    "common_mistakes": {
+      "type": "string"
+    },
+    "practice_challenge": {
+      "type": "string"
+    },
+    "advanced_features": {
+      "type": "string"
+    },
+    "related_tools": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "name",
+    "slug",
+    "category",
+    "description"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

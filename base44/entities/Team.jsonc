@@ -1,0 +1,107 @@
+{
+  "name": "Team",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "focus": {
+      "type": "string",
+      "enum": [
+        "Hackathon",
+        "Final Year Project",
+        "Mini Project",
+        "Study Group",
+        "Startup Idea",
+        "Competition",
+        "Other"
+      ],
+      "default": "Mini Project"
+    },
+    "goal": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "lead_name": {
+      "type": "string"
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "member_names": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "roadmap_title": {
+      "type": "string"
+    },
+    "roadmap_problem": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "roadmap_features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "roadmap_tech": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "roadmap_steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "roadmap_shared_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "description"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
