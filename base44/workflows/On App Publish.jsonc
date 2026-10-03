@@ -1,0 +1,41 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "app_publish",
+      "events": [
+        "published"
+      ]
+    }
+  },
+  "description": "Notifies the app's admins every time a new version goes live, including when a previous version is restored.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_app_publish",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "notify_admins": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "onAppPublished",
+            "args": {
+              "published_at": "${ .trigger.occurred_at }",
+              "visibility": "${ .trigger.visibility }",
+              "is_first_publish": "${ .trigger.is_first_publish }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Notify the admins",
+            "description": "Email the team about the new version"
+          }
+        }
+      }
+    ]
+  },
+  "name": "On App Publish"
+}
