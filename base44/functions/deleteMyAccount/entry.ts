@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
+import { serverError } from '../../shared/http.ts';
 
 /**
  * Removes the signed-in student's own data: identity profile, saved
@@ -39,6 +40,6 @@ export default async function(req) {
 
     return Response.json({ success: true, removed });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    return serverError(error);
   }
 }

@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { normalizeName, normalizeMobile, findConflicts } from '../../shared/identity.ts';
+import { serverError } from '../../shared/http.ts';
 
 // Student-editable identity details. Name and mobile changes are re-validated for
 // uniqueness here, because the client can't be trusted to enforce that.
@@ -38,6 +39,6 @@ export default async function (req) {
 
     return Response.json({ profile: updated });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    return serverError(error);
   }
 }

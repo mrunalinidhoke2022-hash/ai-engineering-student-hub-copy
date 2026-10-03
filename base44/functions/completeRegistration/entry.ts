@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { normalizeName, normalizeEmail, normalizeMobile, nextUserId, findConflicts, rollBackIfLost } from '../../shared/identity.ts';
+import { serverError } from '../../shared/http.ts';
 
 // Runs after the platform has verified the email with the one-time code.
 // Creates the identity record (unique name / email / mobile / User ID) for the
@@ -47,6 +48,6 @@ export default async function (req) {
 
     return Response.json({ profile });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    return serverError(error);
   }
 }

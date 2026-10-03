@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { normalizeMobile } from '../../shared/identity.ts';
 import { throttle, clientIp } from '../../shared/throttle.ts';
+import { serverError } from '../../shared/http.ts';
 
 // Sign-in for students who use their mobile number or generated User ID instead of their email.
 // This runs before sign-in exists, so it cannot identify the caller: it verifies the password
@@ -84,6 +85,7 @@ export default async function (req) {
 
     return Response.json({ access_token: session.access_token });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    // Reachable without an account: log the real fault, tell the caller nothing specific.
+    return serverError(error);
   }
 }

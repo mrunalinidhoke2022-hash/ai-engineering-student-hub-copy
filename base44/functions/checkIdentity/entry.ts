@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { normalizeName, normalizeEmail, normalizeMobile, findConflicts } from '../../shared/identity.ts';
 import { throttle, clientIp } from '../../shared/throttle.ts';
+import { serverError } from '../../shared/http.ts';
 
 // Public pre-check run before an account is created: is this name / email / mobile free?
 // It runs before sign-in exists, so it cannot verify the caller — it is rate limited
@@ -21,12 +22,16 @@ export default async function (req) {
       );
     }
 
-    const ipLimit = await throttle(base44, 'identity-check-ip', clientIp(req), 60, 600);
+    // The yes/no answer itself is the only signal this endpoint can give, so the connection
+    // ceiling is what bounds a harvest: a handful of genuine checks per person, not the
+    // thousands an address-harvesting script needs. It is counted per connection (one shared
+    // bucket when the platform sends no address), so a caller cannot mint fresh buckets.
+    const ipLimit = await throttle(base44, 'identity-check-ip', clientIp(req), 25, 3600);
     if (!ipLimit.allowed) {
       return Response.json(
         {
           available: false,
-          message: 'Too many checks from this connection. Please wait a few minutes and try again.',
+          message: 'Too many checks from this connection. Please wait a while and try again.',
         },
         { status: 429 }
       );
@@ -59,6 +64,11 @@ export default async function (req) {
 
     return Response.json({ available: true });
   } catch (error) {
-    return Response.json({ available: false, message: error.message }, { status: 500 });
+    // Runs before sign-in exists, so the caller is anonymous: the fault is logged for the
+    // app owner and only a fixed message goes back (no SDK or storage internals).
+    return serverError(error, {
+      available: false,
+      message: 'Something went wrong. Please try again.',
+    });
   }
 }
