@@ -11,6 +11,7 @@ import TeamRoadmapPanel from "@/components/workspace/TeamRoadmapPanel";
 import TeamActivityFeed from "@/components/workspace/TeamActivityFeed";
 import TeamKanbanBoard from "@/components/workspace/TeamKanbanBoard";
 import TeamProgressSummary from "@/components/workspace/TeamProgressSummary";
+import PullToRefresh from "@/components/common/PullToRefresh";
 
 export default function Workspace() {
   const { user } = useAuth();
@@ -143,6 +144,7 @@ export default function Workspace() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+      <PullToRefresh onRefresh={loadTeams} />
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="font-heading font-extrabold text-3xl">Team Workspace</h1>
@@ -202,7 +204,7 @@ export default function Workspace() {
         <section className="mt-10 border-t border-border pt-8">
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">{activeTeam.focus}</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">{activeTeam.focus}</p>
               <h2 className="font-heading font-extrabold text-2xl mt-1">{activeTeam.name}</h2>
               {activeTeam.goal && <p className="text-sm text-muted-foreground mt-1">Goal: {activeTeam.goal}</p>}
             </div>

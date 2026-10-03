@@ -85,7 +85,7 @@ export default function CircularMenu({ user, isAdmin }) {
   const sizeClass = metrics.compact ? "w-9 h-9" : "w-11 h-11";
   const iconClass = metrics.compact ? "w-4 h-4" : "w-5 h-5";
   const labelClass = `mt-1 block truncate text-center font-medium ${
-    metrics.compact ? "w-12 text-[9px]" : "w-16 text-[10px]"
+    metrics.compact ? "w-12 text-[9px]" : "w-16 text-xs"
   }`;
 
   return (
@@ -113,7 +113,7 @@ export default function CircularMenu({ user, isAdmin }) {
               aria-label={t("nav.closeMenu")}
             />
 
-            <p className="absolute top-[calc(env(safe-area-inset-top)+1rem)] left-4 right-4 text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+            <p className="absolute top-[calc(env(safe-area-inset-top)+1rem)] left-4 right-4 text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
               {t("nav.jump")}
             </p>
 

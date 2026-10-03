@@ -94,8 +94,15 @@
     @apply border-border outline-ring/50;
   }
 
+  html,
+  body {
+    /* Native app feel: no rubber-band overscroll chaining on the page itself. */
+    overscroll-behavior: none;
+  }
+
   body {
     @apply bg-background text-foreground font-body;
+    -webkit-overflow-scrolling: touch;
   }
 
   h1, h2, h3, h4 {
@@ -112,7 +119,14 @@
 
 @layer utilities {
   .bg-grid-pattern {
-    background-image: linear-gradient(to right, #E2E8F0 1px, transparent 1px), linear-gradient(to bottom, #E2E8F0 1px, transparent 1px);
+    /* Token-based so the grid follows the light/dark theme. */
+    background-image: linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
     background-size: 32px 32px;
+  }
+
+  /* Scrollable containers (modals, sheets, horizontal scrollers). */
+  .scroll-touch {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 }

@@ -68,7 +68,7 @@ function ToolCallDisplay({ toolCall }) {
         <Icon className={`w-3.5 h-3.5 ${running ? "animate-spin" : ""}`} />
       </button>
       {open && (
-        <div className="mt-2 rounded-md bg-muted p-2 font-mono text-[11px] whitespace-pre-wrap break-words">
+        <div className="mt-2 rounded-md bg-muted p-2 font-mono text-xs whitespace-pre-wrap break-words">
           {toolCall.arguments_string && (
             <>
               <p className="font-semibold">Parameters</p>

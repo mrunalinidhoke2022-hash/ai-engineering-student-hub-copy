@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Compass, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 function Block({ title, children }) {
   if (!children) return null;
   return (
     <div className="mt-4">
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{title}</p>
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</p>
       <div className="text-sm mt-1 whitespace-pre-line">{children}</div>
     </div>
   );
@@ -129,18 +130,18 @@ export default function TeamRoadmapPanel({ team, isMember, myRoadmaps, onShare, 
 
           {myRoadmaps.length > 0 ? (
             <div className="flex flex-col sm:flex-row gap-2">
-              <select
-                value={selected}
-                onChange={(e) => setSelected(e.target.value)}
-                className="flex-1 h-9 rounded-md border border-input bg-transparent px-3 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              >
-                <option value="">Choose one of your roadmaps...</option>
-                {myRoadmaps.map((roadmap) => (
-                  <option key={roadmap.id} value={roadmap.id}>
-                    {roadmap.idea}
-                  </option>
-                ))}
-              </select>
+              <Select value={selected} onValueChange={setSelected}>
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="Choose one of your roadmaps..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {myRoadmaps.map((roadmap) => (
+                    <SelectItem key={roadmap.id} value={roadmap.id}>
+                      {roadmap.idea}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <Button size="sm" onClick={share} disabled={!selected || sharing} className="shrink-0">
                 {sharing ? "Sharing..." : hasRoadmap ? "Replace roadmap" : "Share with team"}
               </Button>

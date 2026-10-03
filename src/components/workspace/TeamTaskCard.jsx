@@ -45,7 +45,7 @@ export default function TeamTaskCard({ task, dragging, offset, commentCount = 0,
           <button
             type="button"
             onClick={() => onRequestDelete(task)}
-            className="text-muted-foreground hover:text-destructive shrink-0"
+            className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] text-muted-foreground hover:text-destructive shrink-0"
             aria-label={`Delete ${task.title}`}
           >
             <Trash2 className="w-3.5 h-3.5" />
@@ -53,7 +53,7 @@ export default function TeamTaskCard({ task, dragging, offset, commentCount = 0,
         )}
       </div>
 
-      <div className="flex items-center gap-1.5 mt-2 text-[10px] text-muted-foreground">
+      <div className="flex items-center gap-1.5 mt-2 text-xs text-muted-foreground">
         <User className="w-3 h-3 shrink-0" />
         <span className="truncate">{task.assignee || "Unassigned"}</span>
         <span className="ml-auto shrink-0">{moment(task.created_date).fromNow()}</span>
@@ -63,7 +63,7 @@ export default function TeamTaskCard({ task, dragging, offset, commentCount = 0,
         <button
           type="button"
           onClick={() => onOpenComments(task)}
-          className="inline-flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary"
+          className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary"
           aria-label={`Comments on ${task.title}`}
         >
           <MessageSquare className="w-3 h-3" />
@@ -76,7 +76,7 @@ export default function TeamTaskCard({ task, dragging, offset, commentCount = 0,
               type="button"
               onClick={() => onMove?.(task, -1)}
               disabled={statusIndex <= 0}
-              className="p-0.5 text-muted-foreground hover:text-primary disabled:opacity-30 disabled:pointer-events-none"
+              className="p-2 text-muted-foreground hover:text-primary disabled:opacity-30 disabled:pointer-events-none"
               aria-label={`Move ${task.title} to the previous column`}
             >
               <ChevronLeft className="w-3.5 h-3.5" />
@@ -85,7 +85,7 @@ export default function TeamTaskCard({ task, dragging, offset, commentCount = 0,
               type="button"
               onClick={() => onMove?.(task, 1)}
               disabled={statusIndex >= TASK_STATUSES.length - 1}
-              className="p-0.5 text-muted-foreground hover:text-primary disabled:opacity-30 disabled:pointer-events-none"
+              className="p-2 text-muted-foreground hover:text-primary disabled:opacity-30 disabled:pointer-events-none"
               aria-label={`Move ${task.title} to the next column`}
             >
               <ChevronRight className="w-3.5 h-3.5" />

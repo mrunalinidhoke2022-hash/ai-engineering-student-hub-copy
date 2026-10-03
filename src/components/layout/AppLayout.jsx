@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import PageTransition from "@/components/common/PageTransition";
 import { useAuth } from "@/lib/AuthContext";
 import SiteHeader from "./SiteHeader";
 import MobileBottomNav from "./MobileBottomNav";
@@ -18,7 +18,7 @@ export default function AppLayout() {
       <main className="flex-1 pb-16 lg:pb-0">
         <BackButton />
         <ActivityTracker user={user} />
-        <Outlet />
+        <PageTransition />
       </main>
       <SiteFooter />
       <MobileBottomNav />

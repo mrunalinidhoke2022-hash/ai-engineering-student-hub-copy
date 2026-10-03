@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import TeamTaskCard from "./TeamTaskCard";
 
 export default function KanbanColumn({
@@ -77,18 +78,19 @@ export default function KanbanColumn({
               className="w-full h-8 rounded-md border border-input bg-background px-2 text-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
             />
             {assignees.length > 0 && (
-              <select
-                value={assignee}
-                onChange={(e) => setAssignee(e.target.value)}
-                className="w-full h-8 rounded-md border border-input bg-background px-2 text-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              >
-                <option value="">Unassigned</option>
-                {assignees.map((name, index) => (
-                  <option key={`${name}-${index}`} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </select>
+              <Select value={assignee} onValueChange={(value) => setAssignee(value === "__unassigned__" ? "" : value)}>
+                <SelectTrigger className="w-full h-8 px-2 text-sm">
+                  <SelectValue placeholder="Unassigned" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__unassigned__">Unassigned</SelectItem>
+                  {assignees.map((name, index) => (
+                    <SelectItem key={`${name}-${index}`} value={name}>
+                      {name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
             <div className="flex gap-2">
               <Button size="sm" onClick={submit} disabled={!title.trim()}>

@@ -65,7 +65,7 @@ export default function Dashboard() {
               {recentBookmarks.map((b) => (
                 <div key={b.id} className="flex items-center justify-between text-sm border border-border rounded-md p-3">
                   <span className="font-medium">{b.item_name}</span>
-                  <span className="text-[11px] text-muted-foreground uppercase">{b.item_type.replace("_", " ")}</span>
+                  <span className="text-xs text-muted-foreground uppercase">{b.item_type.replace("_", " ")}</span>
                 </div>
               ))}
             </div>

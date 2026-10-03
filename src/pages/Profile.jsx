@@ -69,7 +69,7 @@ export default function Profile() {
               className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
                 item.code === language
                   ? "bg-primary text-white border-primary"
-                  : "bg-white text-muted-foreground border-border hover:border-primary/40"
+                  : "bg-background text-muted-foreground border-border hover:border-primary/40"
               }`}
             >
               {item.native}

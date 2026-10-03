@@ -13,7 +13,7 @@ export default function ToolCard({ tool, saved, onToggle }) {
           <span className="text-xs font-medium text-primary">{tool.category}</span>
         </div>
         {tool.verified && (
-          <span className="flex items-center gap-1 text-[11px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full shrink-0">
+          <span className="flex items-center gap-1 text-xs font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full shrink-0">
             <CheckCircle2 className="w-3 h-3" /> Verified
           </span>
         )}
@@ -22,9 +22,9 @@ export default function ToolCard({ tool, saved, onToggle }) {
       <p className="text-sm text-muted-foreground line-clamp-2">{tool.description}</p>
 
       <div className="flex flex-wrap gap-1.5">
-        <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{tool.level}</span>
+        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{tool.level}</span>
         {(tool.tags || []).slice(0, 2).map((tag) => (
-          <span key={tag} className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
+          <span key={tag} className="text-xs font-medium px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
             {tag}
           </span>
         ))}

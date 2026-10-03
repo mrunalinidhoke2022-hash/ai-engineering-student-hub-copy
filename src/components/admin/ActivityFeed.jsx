@@ -32,7 +32,7 @@ export default function ActivityFeed() {
                   <p className="font-semibold text-sm truncate">{a.student || "Student"}</p>
                   <p className="text-xs text-muted-foreground">{a.action}</p>
                 </div>
-                <span className="text-[11px] text-muted-foreground shrink-0">{moment(a.created_date).fromNow()}</span>
+                <span className="text-xs text-muted-foreground shrink-0">{moment(a.created_date).fromNow()}</span>
               </div>
             ))}
           </div>

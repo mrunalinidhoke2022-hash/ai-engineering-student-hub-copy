@@ -1,5 +1,6 @@
 import React from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import PageTransition from "@/components/common/PageTransition";
 import { Button } from "@/components/ui/button";
 import SiteFooter from "./SiteFooter";
 import BackButton from "./BackButton";
@@ -19,7 +20,7 @@ export default function PublicLayout() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-border">
+      <header className="sticky top-0 z-40 bg-background/90 backdrop-blur border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <Link to="/" className="font-heading font-extrabold text-lg tracking-tight text-foreground shrink-0">
             ENGINEERING HUB
@@ -52,7 +53,7 @@ export default function PublicLayout() {
 
       <main className="flex-1">
         <BackButton />
-        <Outlet />
+        <PageTransition />
       </main>
 
       <SiteFooter />

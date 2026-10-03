@@ -5,6 +5,7 @@ import EmptyState from "@/components/common/EmptyState";
 import BookmarkButton from "@/components/tools/BookmarkButton";
 import { base44 } from "@/api/base44Client";
 import useSavedBookmarks from "@/hooks/useSavedBookmarks";
+import PullToRefresh from "@/components/common/PullToRefresh";
 
 const CATEGORIES = ["Coding", "Debugging", "Research", "Project Ideas", "Documentation", "PPT", "UI/UX", "Resume", "Interview", "Hackathon", "Learning", "SQL", "GitHub", "Testing"];
 
@@ -15,12 +16,16 @@ export default function Prompts() {
   const [copiedId, setCopiedId] = useState(null);
   const { isSaved, toggle } = useSavedBookmarks("prompt", prompts, "Research");
 
-  useEffect(() => {
+  const load = () => {
     setLoading(true);
     const query = category ? { category } : {};
-    base44.entities.Prompt.filter(query, { sort: "title", limit: 60 })
+    return base44.entities.Prompt.filter(query, { sort: "title", limit: 60 })
       .then((page) => setPrompts(page.items))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    load();
   }, [category]);
 
   const copy = (p) => {
@@ -31,6 +36,7 @@ export default function Prompts() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+      <PullToRefresh onRefresh={load} />
       <h1 className="font-heading font-extrabold text-3xl">AI Prompt Library</h1>
       <p className="text-muted-foreground mt-1">Ready-to-use prompts for coding, research, hackathons, PPTs and more.</p>
 

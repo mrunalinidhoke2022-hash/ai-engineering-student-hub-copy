@@ -43,9 +43,9 @@ export default function StudentDirectory() {
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                     <p className="font-semibold text-sm">{student.full_name}</p>
-                    <span className="font-mono text-[11px] text-muted-foreground">{student.user_id}</span>
+                    <span className="font-mono text-xs text-muted-foreground">{student.user_id}</span>
                     <span
-                      className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                      className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                         student.status === "active"
                           ? "bg-emerald-50 text-emerald-700"
                           : "bg-amber-50 text-amber-700"
@@ -61,7 +61,7 @@ export default function StudentDirectory() {
                     {formatMobile(student.mobile)} · {student.mobile_verified ? "mobile verified" : "mobile pending"}
                   </p>
                 </div>
-                <span className="text-[11px] text-muted-foreground shrink-0">
+                <span className="text-xs text-muted-foreground shrink-0">
                   {new Date(student.registered_at || student.created_date).toLocaleDateString()}
                 </span>
               </div>

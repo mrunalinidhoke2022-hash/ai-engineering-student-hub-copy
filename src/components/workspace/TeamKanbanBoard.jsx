@@ -167,7 +167,7 @@ export default function TeamKanbanBoard({ team, onChanged }) {
           <ClipboardList className="w-4 h-4 text-primary" />
           <h3 className="font-heading font-bold text-sm">Project board</h3>
         </div>
-        <p className="text-[11px] text-muted-foreground">Drag a task between columns to update its status.</p>
+        <p className="text-xs text-muted-foreground">Drag a task between columns to update its status.</p>
       </div>
 
       <KanbanBulkBar

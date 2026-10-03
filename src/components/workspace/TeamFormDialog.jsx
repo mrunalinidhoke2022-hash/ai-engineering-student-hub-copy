@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { base44 } from "@/api/base44Client";
 
 const FOCUS_OPTIONS = [
@@ -71,17 +72,18 @@ export default function TeamFormDialog({ open, onOpenChange, user, onCreated }) 
           </div>
           <div>
             <Label>What kind of team is it?</Label>
-            <select
-              value={form.focus}
-              onChange={(e) => setForm({ ...form, focus: e.target.value })}
-              className="mt-1 w-full h-9 rounded-md border border-input bg-transparent px-3 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            >
-              {FOCUS_OPTIONS.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+            <Select value={form.focus} onValueChange={(value) => setForm({ ...form, focus: value })}>
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder="Choose a team type" />
+              </SelectTrigger>
+              <SelectContent>
+                {FOCUS_OPTIONS.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <Label>Team goal</Label>

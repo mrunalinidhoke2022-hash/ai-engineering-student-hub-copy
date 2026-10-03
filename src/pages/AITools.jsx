@@ -6,6 +6,7 @@ import EmptyState from "@/components/common/EmptyState";
 import { base44 } from "@/api/base44Client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import useSavedBookmarks from "@/hooks/useSavedBookmarks";
+import PullToRefresh from "@/components/common/PullToRefresh";
 
 const CATEGORIES = ["General AI", "Coding", "Research", "Design", "Presentations", "Image Generation", "Video Generation", "Audio", "Writing", "Productivity", "Data Science", "Developer Tools", "Cloud"];
 const LEVELS = ["Beginner", "Intermediate", "Advanced"];
@@ -19,26 +20,29 @@ export default function AITools() {
   const { isSaved, toggle } = useSavedBookmarks("tool", tools, "My AI Tools");
   const { t, term } = useLanguage();
 
-  useEffect(() => {
+  const load = () => {
     setLoading(true);
     const query = {};
     if (category) query.category = category;
     if (level) query.level = level;
     if (search.trim()) query.name = { $regex: search.trim(), $options: "i" };
-    const timer = setTimeout(() => {
-      base44.entities.Tool.filter(query, { sort: "name", limit: 60 })
-        .then((page) => setTools(page.items))
-        .finally(() => setLoading(false));
-    }, 250);
+    return base44.entities.Tool.filter(query, { sort: "name", limit: 60 })
+      .then((page) => setTools(page.items))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(load, 250);
     return () => clearTimeout(timer);
   }, [search, category, level]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+      <PullToRefresh onRefresh={load} />
       <h1 className="font-heading font-extrabold text-3xl">{t("aitools.title")}</h1>
       <p className="text-muted-foreground mt-1">{t("aitools.subtitle")}</p>
 
-      <div className="mt-6 flex items-center gap-2 bg-white border border-border rounded-lg p-2 max-w-lg">
+      <div className="mt-6 flex items-center gap-2 bg-background border border-border rounded-lg p-2 max-w-lg">
         <Search className="w-4 h-4 text-muted-foreground ml-2" />
         <input
           value={search}

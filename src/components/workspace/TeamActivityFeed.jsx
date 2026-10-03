@@ -75,10 +75,10 @@ export default function TeamActivityFeed({ teamId, canPost }) {
             <li key={update.id} className="py-3 first:pt-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs font-semibold">{update.author_name || "Teammate"}</span>
-                <span className="text-[10px] font-semibold uppercase tracking-wide text-primary bg-accent rounded-full px-2 py-0.5">
+                <span className="text-xs font-semibold uppercase tracking-wide text-primary bg-accent rounded-full px-2 py-0.5">
                   {KIND_LABEL[update.kind] || "Update"}
                 </span>
-                <span className="text-[11px] text-muted-foreground ml-auto">
+                <span className="text-xs text-muted-foreground ml-auto">
                   {moment(update.created_date).fromNow()}
                 </span>
               </div>

@@ -5,6 +5,7 @@ import EmptyState from "@/components/common/EmptyState";
 import BookmarkButton from "@/components/tools/BookmarkButton";
 import { base44 } from "@/api/base44Client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import PullToRefresh from "@/components/common/PullToRefresh";
 
 const CATEGORIES = ["Web Development", "AI/ML", "Programming Basics", "First Year Engineering", "Mobile Development", "Data Science"];
 
@@ -15,16 +16,21 @@ export default function Learn() {
   const [loading, setLoading] = useState(true);
   const { t, term } = useLanguage();
 
-  useEffect(() => {
+  const load = () => {
     setLoading(true);
     const query = category ? { category } : {};
-    base44.entities.LearningPath.filter(query, { sort: "title", limit: 40 })
+    return base44.entities.LearningPath.filter(query, { sort: "title", limit: 40 })
       .then((page) => setPaths(page.items))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    load();
   }, [category]);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+      <PullToRefresh onRefresh={load} />
       <h1 className="font-heading font-extrabold text-3xl">{t("learn.title")}</h1>
       <p className="text-muted-foreground mt-1">{t("learn.subtitle")}</p>
 
@@ -56,7 +62,7 @@ export default function Learn() {
       {active && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setActive(null)}>
           <div
-            className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto p-6"
+            className="bg-card rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto p-6 scroll-touch"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between">

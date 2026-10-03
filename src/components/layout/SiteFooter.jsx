@@ -16,7 +16,7 @@ export default function SiteFooter() {
   const { t } = useLanguage();
 
   return (
-    <footer className="border-t border-border bg-card">
+    <footer className="border-t border-border bg-card pb-[env(safe-area-inset-bottom)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 grid gap-8 sm:grid-cols-3">
         <div>
           <p className="font-heading font-extrabold text-lg tracking-tight">ENGINEERING HUB</p>

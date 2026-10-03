@@ -14,7 +14,7 @@ export default function TeamCard({ team, isMember, active, busy, onOpen, onJoin 
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="font-heading font-bold text-sm truncate">{team.name}</p>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-primary mt-1">
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary mt-1">
             {team.focus || "Project team"}
           </p>
         </div>
@@ -25,7 +25,7 @@ export default function TeamCard({ team, isMember, active, busy, onOpen, onJoin 
 
       <p className="text-xs text-muted-foreground mt-2 leading-5 max-h-10 overflow-hidden flex-1">{team.description}</p>
 
-      {team.goal && <p className="text-[11px] text-muted-foreground mt-2">Goal: {team.goal}</p>}
+      {team.goal && <p className="text-xs text-muted-foreground mt-2">Goal: {team.goal}</p>}
 
       <Button
         size="sm"

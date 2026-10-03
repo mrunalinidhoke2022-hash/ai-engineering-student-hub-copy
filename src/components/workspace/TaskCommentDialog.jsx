@@ -116,7 +116,7 @@ export default function TaskCommentDialog({ team, task, open, onOpenChange, onPo
             rows={3}
           />
           <div className="flex items-center justify-between gap-3">
-            <span className="text-[11px] text-muted-foreground">{message.length}/500</span>
+            <span className="text-xs text-muted-foreground">{message.length}/500</span>
             <Button size="sm" className="gap-1.5" onClick={post} disabled={posting || !message.trim()}>
               <Send className="w-3.5 h-3.5" /> {posting ? "Posting..." : "Post comment"}
             </Button>

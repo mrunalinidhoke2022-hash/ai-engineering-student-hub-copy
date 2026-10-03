@@ -71,7 +71,7 @@ export default function TeamProgressSummary({ team, refreshKey }) {
           <BarChart3 className="w-4 h-4 text-primary" />
           <h3 className="font-heading font-bold text-sm">Task summary</h3>
         </div>
-        <p className="text-[11px] text-muted-foreground">Completed versus pending work on this team's board.</p>
+        <p className="text-xs text-muted-foreground">Completed versus pending work on this team's board.</p>
       </div>
 
       {loading ? (
@@ -85,7 +85,7 @@ export default function TeamProgressSummary({ team, refreshKey }) {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
             {tiles.map((tile) => (
               <div key={tile.label} className="rounded-lg border border-border bg-background px-3 py-2.5">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{tile.label}</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">{tile.label}</p>
                 <p className={`font-heading font-extrabold text-2xl mt-1 ${tile.className}`}>{tile.value}</p>
               </div>
             ))}
@@ -97,7 +97,7 @@ export default function TeamProgressSummary({ team, refreshKey }) {
 
           <div className="grid sm:grid-cols-2 gap-5 mt-5">
             <div className="rounded-lg border border-border bg-background p-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                 Where the work stands
               </p>
               <ChartContainer config={CHART_CONFIG} className="aspect-auto h-[170px] w-full mt-1">
@@ -131,7 +131,7 @@ export default function TeamProgressSummary({ team, refreshKey }) {
             </div>
 
             <div className="rounded-lg border border-border bg-background p-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                 Completed vs pending
               </p>
               <ChartContainer config={CHART_CONFIG} className="aspect-auto h-[220px] w-full mt-1">

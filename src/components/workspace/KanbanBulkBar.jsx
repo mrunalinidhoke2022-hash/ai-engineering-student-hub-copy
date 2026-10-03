@@ -12,7 +12,7 @@ export default function KanbanBulkBar({ count, moveTargets, busy, onMove, onDele
       </span>
 
       {moveTargets.length > 0 && (
-        <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+        <span className="flex items-center gap-1 text-xs text-muted-foreground">
           <ArrowRight className="w-3 h-3" /> Move to
         </span>
       )}

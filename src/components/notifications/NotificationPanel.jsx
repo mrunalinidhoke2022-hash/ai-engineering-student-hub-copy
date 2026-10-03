@@ -62,7 +62,7 @@ export default function NotificationPanel({ user }) {
         >
           <Bell className="w-4 h-4" />
           {unread > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+            <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
               {unread > 9 ? "9+" : unread}
             </span>
           )}
@@ -83,13 +83,13 @@ export default function NotificationPanel({ user }) {
               <div key={item.id} className="px-4 py-3 border-b border-border last:border-0">
                 <div className="flex items-center gap-2">
                   <span
-                    className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                    className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                       CATEGORY_CLASSES[item.category] || "bg-secondary text-secondary-foreground"
                     }`}
                   >
                     {item.category}
                   </span>
-                  <span className="text-[11px] text-muted-foreground">{moment(item.created_date).fromNow()}</span>
+                  <span className="text-xs text-muted-foreground">{moment(item.created_date).fromNow()}</span>
                 </div>
                 <p className="font-semibold text-sm mt-1.5">{item.title}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">{item.message}</p>

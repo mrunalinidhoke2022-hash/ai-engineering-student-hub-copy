@@ -4,6 +4,7 @@ import { Trash2 } from "lucide-react";
 import FilterChips from "@/components/common/FilterChips";
 import EmptyState from "@/components/common/EmptyState";
 import { base44 } from "@/api/base44Client";
+import PullToRefresh from "@/components/common/PullToRefresh";
 
 const FOLDERS = ["My AI Tools", "Coding", "Hackathon", "Research", "Projects", "Design"];
 
@@ -23,12 +24,14 @@ export default function Toolkit() {
   const load = () => {
     setLoading(true);
     const query = folder ? { folder } : {};
-    base44.entities.Bookmark.filter(query, { sort: "-created_date", limit: 100 })
+    return base44.entities.Bookmark.filter(query, { sort: "-created_date", limit: 100 })
       .then((page) => setBookmarks(page.items))
       .finally(() => setLoading(false));
   };
 
-  useEffect(load, [folder]);
+  useEffect(() => {
+    load();
+  }, [folder]);
 
   const remove = async (id) => {
     await base44.entities.Bookmark.delete(id);
@@ -37,6 +40,7 @@ export default function Toolkit() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+      <PullToRefresh onRefresh={load} />
       <h1 className="font-heading font-extrabold text-3xl">My Toolkit</h1>
       <p className="text-muted-foreground mt-1">Everything you've saved — AI tools, prompts, coding problems, learning paths and hackathon resources.</p>
 
@@ -56,13 +60,13 @@ export default function Toolkit() {
               return (
                 <div key={b.id} className="flex items-center justify-between gap-3 bg-card border border-border rounded-lg p-4">
                   <div>
-                    <span className="text-[11px] font-semibold text-primary uppercase">{b.item_type.replace("_", " ")}</span>
+                    <span className="text-xs font-semibold text-primary uppercase">{b.item_type.replace("_", " ")}</span>
                     <p className="font-semibold text-sm">{b.item_name}</p>
-                    <span className="text-[11px] text-muted-foreground">{b.folder}</span>
+                    <span className="text-xs text-muted-foreground">{b.folder}</span>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     {route && <Link to={route} className="text-sm font-semibold text-primary">Open</Link>}
-                    <button onClick={() => remove(b.id)} className="p-1.5 text-muted-foreground hover:text-destructive">
+                    <button onClick={() => remove(b.id)} className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] text-muted-foreground hover:text-destructive">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>

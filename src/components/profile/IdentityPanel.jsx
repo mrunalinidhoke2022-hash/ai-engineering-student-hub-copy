@@ -25,11 +25,11 @@ function VerifiedBadge({ verified }) {
   const { t } = useLanguage();
 
   return verified ? (
-    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700">
+    <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700">
       <BadgeCheck className="w-3.5 h-3.5" /> {t("identity.verified")}
     </span>
   ) : (
-    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700">
+    <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-700">
       <Clock className="w-3.5 h-3.5" /> {t("identity.pending")}
     </span>
   );

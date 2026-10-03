@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -9,35 +10,39 @@ import ScrollToTop from './components/ScrollToTop';
 import ColorSchemeSync from './components/ColorSchemeSync';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { LanguageProvider } from '@/lib/i18n/LanguageContext';
-import Login from '@/pages/Login';
-import Register from '@/pages/Register';
-import ForgotPassword from '@/pages/ForgotPassword';
-import ResetPassword from '@/pages/ResetPassword';
-import OAuthConsent from '@/pages/OAuthConsent';
 import PublicLayout from '@/components/layout/PublicLayout';
 // Add page imports here
 import AppLayout from '@/components/layout/AppLayout';
-import Home from '@/pages/Home';
-import AITools from '@/pages/AITools';
-import ToolDetail from '@/pages/ToolDetail';
-import ToolFinder from '@/pages/ToolFinder';
-import Learn from '@/pages/Learn';
-import CodingPractice from '@/pages/CodingPractice';
-import CodingProblemDetail from '@/pages/CodingProblemDetail';
-import HackathonHub from '@/pages/HackathonHub';
-import ProjectBuilder from '@/pages/ProjectBuilder';
-import Prompts from '@/pages/Prompts';
-import Mentor from '@/pages/Mentor';
-import Dashboard from '@/pages/Dashboard';
-import Toolkit from '@/pages/Toolkit';
-import Profile from '@/pages/Profile';
-import Admin from '@/pages/Admin';
-import Search from '@/pages/Search';
-import TopicGuide from '@/pages/TopicGuide';
-import Team from '@/pages/Team';
-import Workspace from '@/pages/Workspace';
-import About from '@/pages/About';
-import Contact from '@/pages/Contact';
+import PageLoader from '@/components/common/PageLoader';
+
+// Route-level code splitting: every page (and the heavy libraries it imports,
+// e.g. recharts) loads as its own chunk on first visit.
+const Login = lazy(() => import('@/pages/Login'));
+const Register = lazy(() => import('@/pages/Register'));
+const ForgotPassword = lazy(() => import('@/pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
+const OAuthConsent = lazy(() => import('@/pages/OAuthConsent'));
+const Home = lazy(() => import('@/pages/Home'));
+const AITools = lazy(() => import('@/pages/AITools'));
+const ToolDetail = lazy(() => import('@/pages/ToolDetail'));
+const ToolFinder = lazy(() => import('@/pages/ToolFinder'));
+const Learn = lazy(() => import('@/pages/Learn'));
+const CodingPractice = lazy(() => import('@/pages/CodingPractice'));
+const CodingProblemDetail = lazy(() => import('@/pages/CodingProblemDetail'));
+const HackathonHub = lazy(() => import('@/pages/HackathonHub'));
+const ProjectBuilder = lazy(() => import('@/pages/ProjectBuilder'));
+const Prompts = lazy(() => import('@/pages/Prompts'));
+const Mentor = lazy(() => import('@/pages/Mentor'));
+const Dashboard = lazy(() => import('@/pages/Dashboard'));
+const Toolkit = lazy(() => import('@/pages/Toolkit'));
+const Profile = lazy(() => import('@/pages/Profile'));
+const Admin = lazy(() => import('@/pages/Admin'));
+const Search = lazy(() => import('@/pages/Search'));
+const TopicGuide = lazy(() => import('@/pages/TopicGuide'));
+const Team = lazy(() => import('@/pages/Team'));
+const Workspace = lazy(() => import('@/pages/Workspace'));
+const About = lazy(() => import('@/pages/About'));
+const Contact = lazy(() => import('@/pages/Contact'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -64,6 +69,7 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
+    <Suspense fallback={<PageLoader />}>
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -99,6 +105,7 @@ const AuthenticatedApp = () => {
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
+    </Suspense>
   );
 };
 

@@ -5,6 +5,7 @@ import FilterChips from "@/components/common/FilterChips";
 import EmptyState from "@/components/common/EmptyState";
 import BookmarkButton from "@/components/tools/BookmarkButton";
 import { base44 } from "@/api/base44Client";
+import PullToRefresh from "@/components/common/PullToRefresh";
 
 const BASICS = [
   { q: "What is a hackathon?", a: "A time-boxed event (usually 12-48 hours) where teams build a working prototype around a theme or problem statement." },
@@ -25,16 +26,21 @@ export default function HackathonHub() {
   const [active, setActive] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const load = () => {
     setLoading(true);
     const query = category ? { category } : {};
-    base44.entities.ProblemStatement.filter(query, { sort: "title", limit: 40 })
+    return base44.entities.ProblemStatement.filter(query, { sort: "title", limit: 40 })
       .then((page) => setProblems(page.items))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    load();
   }, [category]);
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+      <PullToRefresh onRefresh={load} />
       <h1 className="font-heading font-extrabold text-3xl">Hackathon Center</h1>
       <p className="text-muted-foreground mt-1">Everything you need from finding a hackathon to pitching your demo.</p>
 
@@ -50,7 +56,7 @@ export default function HackathonHub() {
         </div>
       </section>
 
-      <section className="mt-10 overflow-x-auto">
+      <section className="mt-10 overflow-x-auto scroll-touch">
         <h2 className="font-heading font-bold text-xl mb-4">Hackathon Roadmap</h2>
         <HackathonRoadmap />
       </section>
@@ -79,7 +85,7 @@ export default function HackathonHub() {
 
       {active && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setActive(null)}>
-          <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-card rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto p-6 scroll-touch" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-start justify-between">
               <div>
                 <span className="text-xs font-semibold text-primary">{active.category} · {active.complexity}</span>
