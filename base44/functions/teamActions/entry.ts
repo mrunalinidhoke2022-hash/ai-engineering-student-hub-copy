@@ -41,8 +41,12 @@ export default async function (req: Request): Promise<Response> {
         members: [...members, user.id],
         member_names: [...memberNames, displayName]
       });
-      // Task access is scoped by the member list stored on each task.
+      // Task and comment access is scoped by the member list stored on each record.
       await base44.asServiceRole.entities.TeamTask.updateMany(
+        { team_id: teamId },
+        { $addToSet: { team_members: user.id } }
+      );
+      await base44.asServiceRole.entities.TaskComment.updateMany(
         { team_id: teamId },
         { $addToSet: { team_members: user.id } }
       );
@@ -63,7 +67,14 @@ export default async function (req: Request): Promise<Response> {
         members: members.filter((id) => id !== user.id),
         member_names: memberNames.filter((_, position) => position !== index)
       });
+      // Comments carry the same member snapshot as tasks, so leaving must strip the member
+      // here too — otherwise their ID stays embedded in every comment written while they were
+      // a member and the read rule keeps granting them the team's discussion.
       await base44.asServiceRole.entities.TeamTask.updateMany(
+        { team_id: teamId },
+        { $pull: { team_members: user.id } }
+      );
+      await base44.asServiceRole.entities.TaskComment.updateMany(
         { team_id: teamId },
         { $pull: { team_members: user.id } }
       );
@@ -100,8 +111,12 @@ export default async function (req: Request): Promise<Response> {
         members: [...members, profile.account_id],
         member_names: [...memberNames, teammateName]
       });
-      // Task access is scoped by the member list stored on each task.
+      // Task and comment access is scoped by the member list stored on each record.
       await base44.asServiceRole.entities.TeamTask.updateMany(
+        { team_id: teamId },
+        { $addToSet: { team_members: profile.account_id } }
+      );
+      await base44.asServiceRole.entities.TaskComment.updateMany(
         { team_id: teamId },
         { $addToSet: { team_members: profile.account_id } }
       );

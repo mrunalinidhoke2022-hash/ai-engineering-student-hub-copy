@@ -46,7 +46,15 @@ export default async function (req) {
 
     const conflict = await findConflicts(base44, { fullName, email, mobile });
     if (conflict) {
-      return Response.json({ available: false, field: conflict.field, message: conflict.message });
+      // This check runs before sign-in, so it must not confirm WHICH detail is registered:
+      // a per-field answer let a script probe candidate emails, mobiles and names and harvest
+      // the app's student list. One generic answer covers every conflict; the verified steps
+      // (completeRegistration, updateProfile) still name the exact field to a signed-in user.
+      return Response.json({
+        available: false,
+        message:
+          'Some of these details are already registered. Sign in with your registered account, or use different ones.',
+      });
     }
 
     return Response.json({ available: true });

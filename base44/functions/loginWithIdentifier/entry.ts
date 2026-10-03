@@ -32,7 +32,14 @@ export default async function (req) {
       );
     }
 
-    const idLimit = await throttle(base44, 'login-identifier', identifier.toLowerCase(), 10, 900);
+    // The lockout key must be the SAME normalized value the lookup below uses. Keying it on the
+    // raw input let every formatting variant of one account ('98765 43210', '+919876543210',
+    // '09876543210', different User-ID casing) open its own fresh 10-attempt bucket, so the
+    // per-account limit could be bypassed indefinitely.
+    const mobileKey = normalizeMobile(identifier);
+    const identifierKey = mobileKey.length === 10 ? mobileKey : identifier.toUpperCase();
+
+    const idLimit = await throttle(base44, 'login-identifier', identifierKey, 10, 900);
     if (!idLimit.allowed) {
       return Response.json(
         { error: 'Too many attempts for this account. Please wait 15 minutes and try again.' },
@@ -42,7 +49,6 @@ export default async function (req) {
 
     const invalid = { error: 'Invalid mobile number / User ID or password.' };
     const fields = ['email', 'status'];
-    const mobileKey = normalizeMobile(identifier);
     let profile = null;
 
     if (mobileKey.length === 10) {
