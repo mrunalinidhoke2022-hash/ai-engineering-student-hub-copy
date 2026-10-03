@@ -30,6 +30,14 @@ const formatWhen = (value) => {
 export default async function (req) {
   try {
     const base44 = createClientFromRequest(req);
+
+    // Listing every user and emailing all admins is privileged work, so the caller is verified
+    // first: only a signed-in admin may trigger it. An anonymous caller reaching the function
+    // URL gets nothing — no user listing, no email.
+    const user = await base44.auth.me().catch(() => null);
+    if (!user) return Response.json({ error: 'Sign in required.' }, { status: 401 });
+    if (user.role !== 'admin') return Response.json({ error: 'Admins only.' }, { status: 403 });
+
     const body = await req.json().catch(() => ({}));
 
     const publishedAt = clean(body.published_at, 40);

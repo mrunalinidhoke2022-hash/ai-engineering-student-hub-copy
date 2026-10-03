@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { normalizeEmail } from '../../shared/identity.ts';
+import { throttle } from '../../shared/throttle.ts';
 
 const TASK_STATUSES = ['todo', 'in_progress', 'completed'];
 const MAX_MEMBERS = 8;
@@ -97,10 +98,17 @@ export default async function (req: Request): Promise<Response> {
         return Response.json({ error: `This team is full (${MAX_MEMBERS} members).` });
       }
 
+      // This lookup is the only place a student can probe another student's registration, so it
+      // is counted per signed-in account: a class list of addresses cannot be harvested here.
+      const probeLimit = await throttle(base44, 'team-add-member', user.id, 15, 3600);
+      if (!probeLimit.allowed) {
+        return Response.json({ error: 'Too many classmate lookups. Please try again later.' });
+      }
+
       const found = await base44.asServiceRole.entities.StudentProfile.filter({ email_key: email }, { limit: 1 });
       const profile = found?.items?.[0];
       if (!profile?.account_id) {
-        return Response.json({ error: 'No student found with that email. Ask them to register first.' });
+        return Response.json({ error: 'That email cannot be added right now. Check the address your classmate registered with.' });
       }
       if (members.includes(profile.account_id)) {
         return Response.json({ error: 'They are already on this team.' });
@@ -126,7 +134,9 @@ export default async function (req: Request): Promise<Response> {
         author_name: displayName,
         message: `${displayName} added ${teammateName} to the team`
       });
-      return Response.json({ ok: true, added: true, name: teammateName });
+      // The teammate's real name is deliberately not echoed back: the caller only needs to know
+      // the invite went through, and returning the name would turn this into a people lookup.
+      return Response.json({ ok: true, added: true });
     }
 
     if (action === 'share_roadmap') {
