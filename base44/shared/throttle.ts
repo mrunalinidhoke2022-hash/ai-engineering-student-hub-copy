@@ -13,27 +13,30 @@ const hashKey = async (value) => {
     .join('');
 };
 
-// Best-effort caller address. Students on one campus network share a public address,
-// so the per-address limit is deliberately generous.
+// Caller address used as a rate-limit key. Only addresses the platform's own edge sets are
+// trusted (it overwrites anything a caller sends); x-forwarded-for is deliberately never read
+// because a caller can put an arbitrary value in it. When no trusted address is present the
+// caller joins one shared anonymous bucket instead of being able to pick a fresh key per
+// request. Students on one campus network share a public address, so the limit stays generous.
 export const clientIp = (req) => {
-  const forwarded = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '';
-  return forwarded.split(',')[0].trim() || 'unknown';
+  const platformAddress = req.headers.get('cf-connecting-ip') || req.headers.get('x-real-ip') || '';
+  return platformAddress.trim() || 'unknown';
 };
 
-// Records one attempt and reports whether the caller is still inside the limit.
+// Records one attempt and reports whether the caller is still inside the limit. The window is
+// rolled and the count is raised with single conditional writes, so parallel requests can never
+// undercount their way past the limit.
 export const throttle = async (base44, bucket, value, limit, windowSeconds) => {
   const keyHash = await hashKey(`${bucket}:${value}`);
   const windowMs = windowSeconds * 1000;
   const now = Date.now();
+  const counters = base44.asServiceRole.entities.RequestThrottle;
 
-  const page = await base44.asServiceRole.entities.RequestThrottle.filter(
-    { key_hash: keyHash },
-    { limit: 1 }
-  );
+  const page = await counters.filter({ key_hash: keyHash }, { limit: 1 });
   const record = page.items[0];
 
   if (!record) {
-    await base44.asServiceRole.entities.RequestThrottle.create({
+    await counters.create({
       key_hash: keyHash,
       bucket,
       window_started_at: new Date(now).toISOString(),
@@ -43,21 +46,25 @@ export const throttle = async (base44, bucket, value, limit, windowSeconds) => {
   }
 
   const startedAt = new Date(record.window_started_at).getTime();
-  const expired = !startedAt || now - startedAt > windowMs;
-  const count = record.count || 0;
 
-  if (expired) {
-    await base44.asServiceRole.entities.RequestThrottle.update(record.id, {
-      window_started_at: new Date(now).toISOString(),
-      count: 1,
-    });
-    return { allowed: true };
+  if (!startedAt || now - startedAt > windowMs) {
+    // Roll the window; a request that loses the race simply counts against the new one.
+    const rolled = await counters.updateMany(
+      { key_hash: keyHash, window_started_at: record.window_started_at },
+      { $set: { window_started_at: new Date(now).toISOString(), count: 1 } }
+    );
+    if (rolled?.updated) return { allowed: true };
   }
 
-  if (count >= limit) {
-    return { allowed: false, retryAfterSeconds: Math.ceil((windowMs - (now - startedAt)) / 1000) };
-  }
+  // One attempt is only counted while the window is still open and under the limit.
+  const bumped = await counters.updateMany(
+    { key_hash: keyHash, count: { $lt: limit } },
+    { $inc: { count: 1 } }
+  );
+  if (bumped?.updated) return { allowed: true };
 
-  await base44.asServiceRole.entities.RequestThrottle.update(record.id, { count: count + 1 });
-  return { allowed: true };
+  return {
+    allowed: false,
+    retryAfterSeconds: Math.max(1, Math.ceil((windowMs - (now - startedAt)) / 1000)),
+  };
 };

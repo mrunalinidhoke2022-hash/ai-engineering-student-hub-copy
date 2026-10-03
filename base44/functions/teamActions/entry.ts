@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { normalizeEmail } from '../../shared/identity.ts';
 
+const TASK_STATUSES = ['todo', 'in_progress', 'completed'];
 const MAX_MEMBERS = 8;
 const MAX_FEATURES = 8;
 const MAX_STEPS = 8;
@@ -163,6 +164,48 @@ export default async function (req: Request): Promise<Response> {
         message: `${displayName} updated the team roadmap`
       });
       return Response.json({ ok: true, title });
+    }
+
+    // Task and comment writes go through here so membership and authorship are decided
+    // server-side: a signed-in user can neither post into a team they are not on, nor choose
+    // the name a post appears under.
+    if (action === 'add_task') {
+      const title = clean(body?.title, 200);
+      if (!title) return Response.json({ error: 'Write a short task title first.' });
+
+      const requested = clean(body?.status, 20);
+      const assignee = clean(body?.assignee, 80);
+
+      const created = await base44.asServiceRole.entities.TeamTask.create({
+        team_id: teamId,
+        title,
+        status: TASK_STATUSES.includes(requested) ? requested : 'todo',
+        assignee: memberNames.includes(assignee) ? assignee : '',
+        created_by_name: displayName,
+        team_members: members
+      });
+      return Response.json({ ok: true, task: created });
+    }
+
+    if (action === 'add_comment') {
+      const taskId = clean(body?.task_id, 60);
+      const message = clean(body?.message, 500);
+      if (!taskId || !message) return Response.json({ error: 'Write a short comment first.' });
+
+      const task = await base44.asServiceRole.entities.TeamTask.get(taskId).catch(() => null);
+      if (!task || task.team_id !== teamId) {
+        return Response.json({ error: 'That task is no longer on this board.' });
+      }
+
+      const created = await base44.asServiceRole.entities.TaskComment.create({
+        team_id: teamId,
+        task_id: taskId,
+        message,
+        author_name: displayName,
+        author_id: user.id,
+        team_members: members
+      });
+      return Response.json({ ok: true, comment: created });
     }
 
     if (action === 'post_update') {
