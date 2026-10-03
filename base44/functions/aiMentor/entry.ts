@@ -1,10 +1,21 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
+import { throttle } from '../../shared/throttle.ts';
 
 export default async function (req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+    // Every message costs a paid LLM call, so one account is capped per hour: enough for a
+    // real study session, far short of what a script would need to drain the app's credits.
+    const limit = await throttle(base44, 'ai-mentor', user.id, 40, 3600);
+    if (!limit.allowed) {
+      return Response.json(
+        { error: 'You have reached the mentor limit for now. Please try again a little later.' },
+        { status: 429 }
+      );
+    }
 
     const body = await req.json().catch(() => ({}));
     const message = typeof body?.message === 'string' ? body.message.trim().slice(0, 500) : '';

@@ -43,8 +43,11 @@ export default function ProjectBuilder() {
     try {
       const res = await base44.functions.invoke("projectRoadmap", { idea: idea.trim() });
       setRoadmap(res.data);
-    } catch {
-      toast({ description: "Something went wrong. Please try again.", variant: "destructive" });
+    } catch (err) {
+      toast({
+        description: err?.response?.data?.error || "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }

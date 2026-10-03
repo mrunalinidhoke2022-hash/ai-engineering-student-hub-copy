@@ -1,10 +1,21 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
+import { throttle } from '../../shared/throttle.ts';
 
 export default async function (req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+    // A roadmap is one large paid generation, so each account gets only a few per hour —
+    // plenty for real planning, but not for a script burning through the credit balance.
+    const limit = await throttle(base44, 'project-roadmap', user.id, 6, 3600);
+    if (!limit.allowed) {
+      return Response.json(
+        { error: 'You have generated several roadmaps already. Please try again later.' },
+        { status: 429 }
+      );
+    }
 
     const body = await req.json().catch(() => ({}));
     const idea = typeof body?.idea === 'string' ? body.idea.trim().slice(0, 300) : '';
