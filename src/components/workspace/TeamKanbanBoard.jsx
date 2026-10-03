@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ClipboardList } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import {
   AlertDialog,
@@ -20,7 +19,6 @@ import { TASK_STATUSES } from "./taskStatuses";
 import useBoardDrag from "@/hooks/useBoardDrag";
 
 export default function TeamKanbanBoard({ team, onChanged }) {
-  const { user } = useAuth();
   const { toast } = useToast();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,16 +52,20 @@ export default function TeamKanbanBoard({ team, onChanged }) {
   }, [team.id]);
 
   const addTask = async (status, title, assignee) => {
-    // Read the team again so a teammate who joined moments ago keeps seeing the board.
-    const fresh = await base44.entities.Team.get(team.id).catch(() => team);
-    const created = await base44.entities.TeamTask.create({
+    // The team function checks membership and stamps the author, so the board cannot be
+    // written to by anyone who is not on the team.
+    const response = await base44.functions.invoke("teamActions", {
+      action: "add_task",
       team_id: team.id,
       title,
       status,
       assignee,
-      created_by_name: user?.full_name || user?.email || "",
-      team_members: fresh?.members || team.members || [],
     });
+    const created = response.data?.task;
+    if (!created) {
+      toast({ description: response.data?.error || "Could not add that task. Please try again.", variant: "destructive" });
+      return;
+    }
     setTasks((prev) => [...prev, created]);
     onChanged?.();
   };

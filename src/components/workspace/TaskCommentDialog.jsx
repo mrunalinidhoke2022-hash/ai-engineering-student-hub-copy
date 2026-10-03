@@ -42,15 +42,22 @@ export default function TaskCommentDialog({ team, task, open, onOpenChange, onPo
     if (!text) return;
     setPosting(true);
     try {
-      // Read the team again so a teammate who joined moments ago can take part.
-      const fresh = await base44.entities.Team.get(team.id).catch(() => team);
-      const created = await base44.entities.TaskComment.create({
+      // The team function checks membership and stamps the author, so nobody can post into
+      // another team's discussion or under someone else's name.
+      const response = await base44.functions.invoke("teamActions", {
+        action: "add_comment",
         team_id: team.id,
         task_id: task.id,
         message: text,
-        author_name: user?.full_name || user?.email || "",
-        team_members: fresh?.members || team.members || [],
       });
+      const created = response.data?.comment;
+      if (!created) {
+        toast({
+          description: response.data?.error || "Could not post that comment. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
       setComments((prev) => [...prev, created]);
       setMessage("");
       onPosted?.(task.id);
@@ -93,7 +100,7 @@ export default function TaskCommentDialog({ team, task, open, onOpenChange, onPo
               <TaskCommentItem
                 key={comment.id}
                 comment={comment}
-                canDelete={comment.created_by_id === user?.id}
+                canDelete={comment.author_id === user?.id || comment.created_by_id === user?.id}
                 onDelete={remove}
               />
             ))
