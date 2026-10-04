@@ -45,6 +45,9 @@ const About = lazy(() => import('@/pages/About'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const ContentUpdates = lazy(() => import('@/pages/ContentUpdates'));
 const Leaderboard = lazy(() => import('@/pages/Leaderboard'));
+const CodeQuest = lazy(() => import('@/pages/CodeQuest'));
+const QuestLevel = lazy(() => import('@/pages/QuestLevel'));
+const QuestChallenge = lazy(() => import('@/pages/QuestChallenge'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -92,6 +95,9 @@ const AuthenticatedApp = () => {
           <Route path="/coding-practice" element={<CodingPractice />} />
           <Route path="/coding-practice/:id" element={<CodingProblemDetail />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/codequest" element={<CodeQuest />} />
+          <Route path="/codequest/challenge/:id" element={<QuestChallenge />} />
+          <Route path="/codequest/:slug/:order" element={<QuestLevel />} />
           <Route path="/hackathon-hub" element={<HackathonHub />} />
           <Route path="/project-builder" element={<ProjectBuilder />} />
           <Route path="/prompts" element={<Prompts />} />

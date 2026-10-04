@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Home, Wrench, Trophy, Hammer, Bookmark } from "lucide-react";
+import { Home, Wrench, Trophy, Hammer, Bookmark, Gamepad2 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const ITEMS = [
   { labelKey: "nav.home", path: "/", icon: Home },
   { labelKey: "nav.tools", path: "/ai-tools", icon: Wrench },
+  { labelKey: "nav.codequest", path: "/codequest", icon: Gamepad2 },
   { labelKey: "nav.hackathons", path: "/hackathon-hub", icon: Trophy },
   { labelKey: "nav.builder", path: "/project-builder", icon: Hammer },
   { labelKey: "nav.toolkit", path: "/toolkit", icon: Bookmark },
@@ -44,7 +45,7 @@ export default function MobileBottomNav() {
 
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border pb-[env(safe-area-inset-bottom)]">
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-6">
         {ITEMS.map((item) => {
           const active = activeTab?.path === item.path;
           const Icon = item.icon;

@@ -1,6 +1,8 @@
 // UI text for the app. Entity content (tool descriptions, guides, prompts,
 // problem statements) stays as stored in the database and is not translated here.
 
+import { codequestEn } from "./codequest";
+
 export const LANGUAGES = [
   { code: "en", label: "English", native: "English" },
   { code: "hi", label: "Hindi", native: "हिंदी" },
@@ -11,6 +13,7 @@ export const DEFAULT_LANGUAGE = "en";
 
 export const translations = {
   en: {
+    ...codequestEn,
     "common.back": "Back",
     "common.cancel": "Cancel",
     "common.loading": "Loading...",

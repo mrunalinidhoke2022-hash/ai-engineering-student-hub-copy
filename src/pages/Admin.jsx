@@ -16,6 +16,8 @@ import AnnouncementManager from "@/components/admin/AnnouncementManager";
 import ActivityFeed from "@/components/admin/ActivityFeed";
 import StudentDirectory from "@/components/admin/StudentDirectory";
 import AutoUpdateTools from "@/components/admin/AutoUpdateTools";
+import QuestContentManager from "@/components/admin/QuestContentManager";
+import QuestBadgeManager from "@/components/admin/QuestBadgeManager";
 
 const EMPTY = { name: "", slug: "", category: "General AI", description: "", official_url: "", level: "Beginner", pricing: "Freemium" };
 
@@ -99,6 +101,9 @@ export default function Admin() {
       <ActivityFeed />
 
       <AutoUpdateTools onDone={load} />
+
+      <QuestContentManager />
+      <QuestBadgeManager />
 
       <div className="flex items-center justify-between mt-10 mb-3">
         <h2 className="font-heading font-bold text-lg">AI Tools</h2>
