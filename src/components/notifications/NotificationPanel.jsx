@@ -10,6 +10,7 @@ const CATEGORY_CLASSES = {
   "New Feature": "bg-accent text-accent-foreground",
   Hackathon: "bg-primary/10 text-primary",
   Deadline: "bg-destructive/10 text-destructive",
+  "Code Review": "bg-primary/10 text-primary",
   Event: "bg-secondary text-secondary-foreground",
   General: "bg-secondary text-secondary-foreground",
 };
@@ -30,13 +31,34 @@ export default function NotificationPanel({ user }) {
       setUnread(cache.unread);
       return;
     }
-    const page = await base44.entities.Announcement.filter({}, { sort: "-created_date", limit: 20 });
     const seenAt = user?.notifications_seen_at;
-    const unreadCount = seenAt
-      ? await base44.entities.Announcement.count({ created_date: { $gt: seenAt } })
-      : page.items.length;
-    cache = { userId: user.id, at: Date.now(), items: page.items, unread: unreadCount };
-    setItems(page.items);
+    const [announcements, reviews] = await Promise.all([
+      base44.entities.Announcement.filter({}, { sort: "-created_date", limit: 20 }),
+      base44.entities.CodeReview.filter(
+        { has_issues: true },
+        { sort: "-created_date", limit: 10, fields: ["problem_id", "problem_title", "summary", "created_date"] }
+      ),
+    ]);
+    const [announcementUnread, reviewUnread] = await Promise.all([
+      base44.entities.Announcement.count(seenAt ? { created_date: { $gt: seenAt } } : {}),
+      base44.entities.CodeReview.count(seenAt ? { has_issues: true, created_date: { $gt: seenAt } } : { has_issues: true }),
+    ]);
+    // Personal code-review alerts sit alongside the site-wide announcements, and only
+    // ever hold the signed-in student's own reviews.
+    const merged = [
+      ...announcements.items.map((a) => ({ id: a.id, badge: a.category, title: a.title, message: a.message, link: a.link, created_date: a.created_date })),
+      ...reviews.items.map((r) => ({
+        id: r.id,
+        badge: "Code Review",
+        title: `Feedback on ${r.problem_title}`,
+        message: r.summary,
+        link: `/coding-practice/${r.problem_id}`,
+        created_date: r.created_date,
+      })),
+    ].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+    const unreadCount = announcementUnread + reviewUnread;
+    cache = { userId: user.id, at: Date.now(), items: merged, unread: unreadCount };
+    setItems(merged);
     setUnread(unreadCount);
   };
 
@@ -84,10 +106,10 @@ export default function NotificationPanel({ user }) {
                 <div className="flex items-center gap-2">
                   <span
                     className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                      CATEGORY_CLASSES[item.category] || "bg-secondary text-secondary-foreground"
+                      CATEGORY_CLASSES[item.badge] || "bg-secondary text-secondary-foreground"
                     }`}
                   >
-                    {item.category}
+                    {item.badge}
                   </span>
                   <span className="text-xs text-muted-foreground">{moment(item.created_date).fromNow()}</span>
                 </div>

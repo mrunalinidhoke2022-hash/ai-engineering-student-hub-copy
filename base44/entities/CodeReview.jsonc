@@ -1,0 +1,77 @@
+{
+  "name": "CodeReview",
+  "type": "object",
+  "properties": {
+    "problem_id": {
+      "type": "string"
+    },
+    "problem_title": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "has_issues": {
+      "type": "boolean",
+      "default": false
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "learning_paths": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "step": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "problem_id",
+    "code"
+  ],
+  "rls": {
+    "read": {
+      "created_by_id": "{{user.id}}"
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

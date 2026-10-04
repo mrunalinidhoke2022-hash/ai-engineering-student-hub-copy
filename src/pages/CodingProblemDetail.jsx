@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/common/EmptyState";
+import CodeReviewPanel from "@/components/coding/CodeReviewPanel";
 import { base44 } from "@/api/base44Client";
 
 export default function CodingProblemDetail() {
@@ -110,6 +111,8 @@ export default function CodingProblemDetail() {
           <Button variant="outline" onClick={practiceAgain}>Practice Again</Button>
         </div>
       </div>
+
+      <CodeReviewPanel problem={problem} />
     </div>
   );
 }
