@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Hammer, Loader2 } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Hammer, Loader2, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
@@ -35,6 +35,12 @@ export default function ProjectBuilder() {
   const [saved, setSaved] = useState(false);
   const { toast } = useToast();
 
+  // A shared link carries the idea in the URL, so the recipient lands ready to generate.
+  useEffect(() => {
+    const sharedIdea = new URLSearchParams(window.location.search).get("idea");
+    if (sharedIdea) setIdea(sharedIdea);
+  }, []);
+
   const generate = async () => {
     if (!idea.trim()) return;
     setLoading(true);
@@ -57,6 +63,12 @@ export default function ProjectBuilder() {
     await base44.entities.ProjectRoadmap.create(roadmap);
     setSaved(true);
     toast({ description: "Roadmap saved to My Dashboard" });
+  };
+
+  const shareRoadmap = async () => {
+    const url = `${window.location.origin}/project-builder?idea=${encodeURIComponent(roadmap.idea)}`;
+    await navigator.clipboard.writeText(url);
+    toast({ description: "Link copied - share it with your batch!" });
   };
 
   return (
@@ -83,7 +95,12 @@ export default function ProjectBuilder() {
         <div className="mt-6 bg-card border border-border rounded-lg p-6 space-y-5">
           <div className="flex items-start justify-between gap-3">
             <h2 className="font-heading font-bold text-xl">{roadmap.idea}</h2>
-            <Button size="sm" variant="outline" onClick={saveRoadmap} disabled={saved}>{saved ? "Saved" : "Save to Dashboard"}</Button>
+            <div className="flex items-center gap-2 shrink-0">
+              <Button size="sm" variant="outline" onClick={shareRoadmap} className="gap-2">
+                <Share2 className="w-4 h-4" /> Share my Roadmap
+              </Button>
+              <Button size="sm" variant="outline" onClick={saveRoadmap} disabled={saved}>{saved ? "Saved" : "Save to Dashboard"}</Button>
+            </div>
           </div>
           <Text title="Problem Definition">{roadmap.problem_definition}</Text>
           <Text title="Target Users">{roadmap.target_users}</Text>
