@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { CheckCircle2, ChevronDown, Lightbulb, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import QuestTerminal from "@/components/quest/QuestTerminal";
 
 const SECTIONS = [
   ["explanation", "Simple explanation"],
@@ -66,7 +67,9 @@ export default function LessonCard({ lesson, completed, onComplete }) {
           {lesson.code_example && (
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Code example</p>
-              <pre className="font-mono text-xs bg-secondary border-2 border-border rounded-xl p-3 overflow-x-auto mt-1 whitespace-pre-wrap">{lesson.code_example}</pre>
+              <QuestTerminal title={lesson.language_slug} prompt={null} className="mt-1">
+                <pre className="font-mono text-xs overflow-x-auto whitespace-pre-wrap">{lesson.code_example}</pre>
+              </QuestTerminal>
             </div>
           )}
 

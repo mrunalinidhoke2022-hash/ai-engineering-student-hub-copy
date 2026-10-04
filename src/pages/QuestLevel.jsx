@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Flame } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Flame } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/common/EmptyState";
 import LessonCard from "@/components/quest/LessonCard";
 import ChallengeCard from "@/components/quest/ChallengeCard";
@@ -101,6 +102,36 @@ export default function QuestLevel() {
     [currentLevel, t, toast]
   );
 
+  // A level is played as one guided session: its lessons, then its challenges.
+  const steps = useMemo(
+    () => [
+      ...lessons.map((lesson) => ({ key: `lesson-${lesson.id}`, kind: "lesson", id: lesson.id, lesson })),
+      ...challenges.map((challenge) => ({ key: `challenge-${challenge.id}`, kind: "challenge", id: challenge.id, challenge })),
+    ],
+    [lessons, challenges]
+  );
+
+  const isStepDone = useCallback(
+    (step) => (step.kind === "lesson" ? completedIds.has(step.id) : attempts[step.id]?.status === "solved"),
+    [completedIds, attempts]
+  );
+
+  const [stepIndex, setStepIndex] = useState(0);
+
+  // Entering a level lands on the first thing still to do, and finishing a step
+  // moves the session on by itself.
+  useEffect(() => {
+    if (!steps.length) return;
+    const firstOpen = steps.findIndex((step) => !isStepDone(step));
+    if (firstOpen < 0) return;
+    setStepIndex((current) => {
+      const step = steps[current];
+      return !step || isStepDone(step) ? firstOpen : current;
+    });
+  }, [steps, isStepDone]);
+
+  const currentStep = steps[stepIndex] || null;
+
   if (loading) {
     return (
       <div className="quest-app min-h-screen bg-background max-w-3xl mx-auto px-4 sm:px-6 py-10">
@@ -179,36 +210,82 @@ export default function QuestLevel() {
         </div>
       )}
 
-      <section className="mt-8">
-        <h2 className="font-game font-extrabold text-xl">{t("codequest.learningMode")}</h2>
-        {lessons.length === 0 ? (
-          <p className="text-sm text-muted-foreground mt-2">{t("codequest.noLessons")}</p>
-        ) : (
-          <div className="space-y-3 mt-3">
-            {lessons.map((lesson) => (
+      {steps.length > 0 && (
+        <section className="mt-8">
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1 flex-1">
+              {steps.map((step, index) => (
+                <span
+                  key={step.key}
+                  className={`h-2 flex-1 rounded-full ${
+                    isStepDone(step) ? "bg-success" : index === stepIndex ? "bg-primary" : "bg-secondary"
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="font-game font-extrabold text-sm shrink-0">
+              {stepIndex + 1} / {steps.length}
+            </span>
+          </div>
+
+          <div className="flex flex-wrap gap-1.5 mt-4">
+            {steps.map((step, index) => (
+              <button
+                key={step.key}
+                type="button"
+                onClick={() => setStepIndex(index)}
+                title={step.kind === "lesson" ? step.lesson.title : step.challenge.title}
+                className={`w-8 h-8 rounded-full font-game font-extrabold text-xs flex items-center justify-center transition-transform active:scale-95 ${
+                  isStepDone(step)
+                    ? "bg-gradient-to-br from-success to-xp text-white"
+                    : index === stepIndex
+                      ? "bg-gradient-to-br from-primary to-xp text-white shadow-game"
+                      : "bg-secondary text-muted-foreground"
+                }`}
+              >
+                {isStepDone(step) ? <Check className="w-4 h-4" strokeWidth={3} /> : index + 1}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-4">
+            {currentStep?.kind === "lesson" ? (
               <LessonCard
-                key={lesson.id}
-                lesson={lesson}
-                completed={completedIds.has(lesson.id)}
+                lesson={currentStep.lesson}
+                completed={isStepDone(currentStep)}
                 onComplete={completeLesson}
               />
-            ))}
+            ) : currentStep ? (
+              <ChallengeCard challenge={currentStep.challenge} attempt={attempts[currentStep.id]} />
+            ) : null}
           </div>
-        )}
-      </section>
 
-      <section className="mt-8">
-        <h2 className="font-game font-extrabold text-xl">{t("codequest.practice")}</h2>
-        {challenges.length === 0 ? (
-          <p className="text-sm text-muted-foreground mt-2">{t("codequest.noChallenges")}</p>
-        ) : (
-          <div className="space-y-3 mt-3">
-            {challenges.map((challenge) => (
-              <ChallengeCard key={challenge.id} challenge={challenge} attempt={attempts[challenge.id]} />
-            ))}
+          <div className="flex items-center justify-between gap-3 mt-4">
+            <Button
+              variant="outline"
+              className="h-11 rounded-full border-2 font-game font-bold"
+              disabled={stepIndex === 0}
+              onClick={() => setStepIndex((index) => Math.max(0, index - 1))}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            <Button
+              className="h-11 rounded-full px-6 font-game font-bold bg-gradient-to-r from-primary to-xp text-primary-foreground shadow-game active:scale-[.97] transition-transform"
+              disabled={stepIndex >= steps.length - 1}
+              onClick={() => setStepIndex((index) => Math.min(steps.length - 1, index + 1))}
+            >
+              {t("codequest.continueCoding")} <ChevronRight className="w-4 h-4" />
+            </Button>
           </div>
-        )}
-      </section>
+        </section>
+      )}
+
+      {lessons.length === 0 && (
+        <p className="text-sm text-muted-foreground mt-6">{t("codequest.noLessons")}</p>
+      )}
+      {challenges.length === 0 && (
+        <p className="text-sm text-muted-foreground mt-3">{t("codequest.noChallenges")}</p>
+      )}
 
       <div className="flex items-center justify-between gap-3 mt-10">
         {previous ? (

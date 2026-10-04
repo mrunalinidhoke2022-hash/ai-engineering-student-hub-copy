@@ -11,6 +11,7 @@ import { AUTO_GRADED_TYPES, CHALLENGE_TYPE_LABELS, DIFFICULTY_CLASSES } from "@/
 import { BOSS_MESSAGES, WIN_MESSAGES, WRONG_MESSAGES, pickMessage } from "@/components/quest/questMessages";
 import { celebrate } from "@/lib/gameFx";
 import QuestShell from "@/components/quest/QuestShell";
+import QuestTerminal from "@/components/quest/QuestTerminal";
 
 const WORKSPACE_NOTICE =
   "This platform never runs student code on its own servers. Automated checking uses an external secure sandbox, so until that service is connected, build and test your solution yourself and compare the output with the expected output.";
@@ -266,26 +267,32 @@ export default function QuestChallenge() {
             ))}
           </div>
         ) : autoGraded ? (
-          <Textarea
-            value={answer}
-            onChange={(event) => setAnswer(event.target.value)}
-            rows={6}
-            maxLength={2000}
-            disabled={solved}
-            placeholder={t("codequest.answerPlaceholder")}
-            className="font-mono text-xs mt-3"
-          />
+          <QuestTerminal title={challenge.language_slug} className="mt-3">
+            <Textarea
+              value={answer}
+              onChange={(event) => setAnswer(event.target.value)}
+              rows={6}
+              maxLength={2000}
+              disabled={solved}
+              spellCheck={false}
+              placeholder={t("codequest.answerPlaceholder")}
+              className="font-mono text-xs border-0 bg-transparent shadow-none focus-visible:ring-0 resize-none p-0"
+            />
+          </QuestTerminal>
         ) : (
           <>
-            <Textarea
-              value={code}
-              onChange={(event) => setCode(event.target.value)}
-              rows={12}
-              maxLength={4000}
-              disabled={solved}
-              placeholder={t("codequest.codePlaceholder")}
-              className="font-mono text-xs mt-3"
-            />
+            <QuestTerminal title={challenge.language_slug} className="mt-3">
+              <Textarea
+                value={code}
+                onChange={(event) => setCode(event.target.value)}
+                rows={12}
+                maxLength={4000}
+                disabled={solved}
+                spellCheck={false}
+                placeholder={t("codequest.codePlaceholder")}
+                className="font-mono text-xs border-0 bg-transparent shadow-none focus-visible:ring-0 resize-y p-0"
+              />
+            </QuestTerminal>
             <div className="flex flex-wrap items-center gap-2 mt-3">
               <Button variant="outline" size="sm" onClick={saveCode} className="gap-1.5">
                 <Save className="w-4 h-4" /> {t("codequest.saveCode")}
