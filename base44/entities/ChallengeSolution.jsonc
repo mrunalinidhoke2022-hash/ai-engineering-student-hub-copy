@@ -1,0 +1,63 @@
+{
+  "name": "ChallengeSolution",
+  "type": "object",
+  "properties": {
+    "challenge_id": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "answer": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "accepted_answers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "explanation": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "hidden_tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "input": {
+            "type": "string"
+          },
+          "expected_output": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "challenge_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "name": "Lesson",
+  "type": "object",
+  "properties": {
+    "language_slug": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "level_order": {
+      "type": "number"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 160
+    },
+    "order": {
+      "type": "number",
+      "default": 0
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "explanation": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "real_world_example": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "code_example": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "try_it": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "practice_question": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "common_mistake": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "hint": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "solution_explanation": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "mini_challenge": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "xp_reward": {
+      "type": "number",
+      "default": 20
+    },
+    "published": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "language_slug",
+    "level_order",
+    "title"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "name": "Achievement",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "icon": {
+      "type": "string",
+      "maxLength": 30
+    },
+    "criteria_type": {
+      "type": "string",
+      "enum": [
+        "xp_total",
+        "lessons_completed",
+        "challenges_solved",
+        "streak_days"
+      ]
+    },
+    "criteria_value": {
+      "type": "number",
+      "default": 1
+    },
+    "xp_reward": {
+      "type": "number",
+      "default": 50
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "key",
+    "name"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "name": "CodingChallenge",
+  "type": "object",
+  "properties": {
+    "language_slug": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "level_order": {
+      "type": "number"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 160
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "multiple_choice",
+        "predict_output",
+        "fix_bug",
+        "complete_code",
+        "write_code",
+        "optimize_code",
+        "debug_program",
+        "build_function",
+        "build_mini_app"
+      ]
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "Easy",
+        "Medium",
+        "Hard",
+        "Expert"
+      ]
+    },
+    "topic": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "problem": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "expected_input": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "expected_output": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "constraints": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "example": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "starter_code": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "test_cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "input": {
+            "type": "string"
+          },
+          "expected_output": {
+            "type": "string"
+          },
+          "visible": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "hints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "xp_reward": {
+      "type": "number",
+      "default": 30
+    },
+    "published": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "language_slug",
+    "level_order",
+    "title",
+    "type",
+    "difficulty",
+    "problem"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

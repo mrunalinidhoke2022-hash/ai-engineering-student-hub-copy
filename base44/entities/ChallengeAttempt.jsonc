@@ -1,0 +1,66 @@
+{
+  "name": "ChallengeAttempt",
+  "type": "object",
+  "properties": {
+    "challenge_id": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "language_slug": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "level_order": {
+      "type": "number"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 160
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "attempting",
+        "solved"
+      ],
+      "default": "attempting"
+    },
+    "attempts": {
+      "type": "number",
+      "default": 0
+    },
+    "hints_used": {
+      "type": "number",
+      "default": 0
+    },
+    "answer": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "xp_awarded": {
+      "type": "number",
+      "default": 0
+    },
+    "solved_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "challenge_id"
+  ],
+  "rls": {
+    "read": {
+      "created_by_id": "{{user.id}}"
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

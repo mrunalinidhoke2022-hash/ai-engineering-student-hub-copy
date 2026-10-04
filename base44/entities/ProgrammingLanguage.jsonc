@@ -1,0 +1,92 @@
+{
+  "name": "ProgrammingLanguage",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "slug": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "tagline": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "overview": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "where_used": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "setup_guide": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "levels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "order": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "Beginner",
+              "Intermediate",
+              "Advanced",
+              "Expert"
+            ]
+          },
+          "focus": {
+            "type": "string"
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "sort_order": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "name",
+    "slug"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
