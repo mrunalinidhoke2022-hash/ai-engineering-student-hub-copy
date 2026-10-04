@@ -421,7 +421,6 @@ export default async function (req: Request): Promise<Response> {
 
     return Response.json({ language: slug, levels_total: levels.length, generated, pending: remaining, complete });
   } catch (error) {
-    console.error('questSeed failed', error);
-    return Response.json({ error: String(error?.message || error) }, { status: 500 });
+    return serverError(error);
   }
 }
