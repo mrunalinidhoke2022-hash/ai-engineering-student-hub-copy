@@ -9,6 +9,7 @@ import QuestStatsBar from "@/components/quest/QuestStatsBar";
 import QuestGuide from "@/components/quest/QuestGuide";
 import LanguageCatalog from "@/components/quest/LanguageCatalog";
 import LevelMap from "@/components/quest/LevelMap";
+import QuestShell from "@/components/quest/QuestShell";
 import { ACHIEVEMENT_ICONS, isBossLevel } from "@/components/quest/questLabels";
 
 const CRITERIA_LABELS = {
@@ -205,7 +206,7 @@ export default function CodeQuest() {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+      <div className="quest-app min-h-screen bg-background max-w-5xl mx-auto px-4 sm:px-6 py-10">
         <p className="text-sm text-muted-foreground">{t("codequest.loading")}</p>
       </div>
     );
@@ -213,14 +214,14 @@ export default function CodeQuest() {
 
   if (failed) {
     return (
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+      <div className="quest-app min-h-screen bg-background max-w-5xl mx-auto px-4 sm:px-6 py-10">
         <EmptyState title={t("codequest.errorTitle")} description={t("codequest.errorBody")} />
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+    <QuestShell wide>
       <QuestHero
         quest={quest}
         level={level}
@@ -239,8 +240,10 @@ export default function CodeQuest() {
       </div>
 
       {!started && !activeSlug && recommended && (
-        <div className="mt-4 flex items-start gap-3 bg-accent/60 border border-border rounded-lg p-4">
-          <Rocket className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+        <div className="mt-4 flex items-start gap-3 rounded-2xl border-2 border-border bg-card p-4">
+          <span className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-xp text-white flex items-center justify-center shrink-0">
+            <Rocket className="w-5 h-5" />
+          </span>
           <div>
             <p className="font-semibold text-sm">{t("codequest.quickStart")}</p>
             <p className="text-sm text-muted-foreground mt-0.5">
@@ -292,7 +295,7 @@ export default function CodeQuest() {
           </div>
 
           {(activeLanguage.overview || activeLanguage.setup_guide || activeLanguage.where_used) && (
-            <div className="bg-card border border-border rounded-lg mt-4">
+            <div className="bg-card border-2 border-border rounded-2xl mt-4">
               <button
                 type="button"
                 onClick={() => setShowOverview((value) => !value)}
@@ -325,9 +328,9 @@ export default function CodeQuest() {
           </div>
 
           {quest?.skill_points?.length > 0 && (
-            <div className="mt-8 bg-card border border-border rounded-lg p-5">
-              <h3 className="font-heading font-bold text-lg flex items-center gap-2">
-                <Star className="w-4 h-4 text-primary" /> {t("codequest.skillScore")}
+            <div className="mt-8 bg-card border-2 border-border rounded-2xl p-5">
+              <h3 className="font-game font-extrabold text-xl flex items-center gap-2">
+                <Star className="w-4 h-4 text-coin" /> {t("codequest.skillScore")}
               </h3>
               <div className="flex flex-wrap gap-2 mt-3">
                 {[...quest.skill_points].sort((a, b) => b.points - a.points).slice(0, 10).map((skill) => (
@@ -381,6 +384,6 @@ export default function CodeQuest() {
           {t("codequest.bossHint", { language: activeLanguage.name })}
         </p>
       )}
-    </div>
+    </QuestShell>
   );
 }

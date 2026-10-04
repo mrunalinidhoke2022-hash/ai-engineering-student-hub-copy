@@ -10,6 +10,7 @@ import EmptyState from "@/components/common/EmptyState";
 import { AUTO_GRADED_TYPES, CHALLENGE_TYPE_LABELS, DIFFICULTY_CLASSES } from "@/components/quest/questLabels";
 import { BOSS_MESSAGES, WIN_MESSAGES, WRONG_MESSAGES, pickMessage } from "@/components/quest/questMessages";
 import { celebrate } from "@/lib/gameFx";
+import QuestShell from "@/components/quest/QuestShell";
 
 const WORKSPACE_NOTICE =
   "This platform never runs student code on its own servers. Automated checking uses an external secure sandbox, so until that service is connected, build and test your solution yourself and compare the output with the expected output.";
@@ -144,7 +145,7 @@ export default function QuestChallenge() {
 
   if (loading) {
     return (
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+      <div className="quest-app min-h-screen bg-background max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <p className="text-sm text-muted-foreground">{t("codequest.loading")}</p>
       </div>
     );
@@ -152,7 +153,7 @@ export default function QuestChallenge() {
 
   if (!challenge) {
     return (
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+      <div className="quest-app min-h-screen bg-background max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <EmptyState title={t("codequest.challengeMissingTitle")} description={t("codequest.challengeMissingBody")} />
       </div>
     );
@@ -162,7 +163,7 @@ export default function QuestChallenge() {
   const visibleTests = (challenge.test_cases || []).filter((test) => test.visible !== false);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+    <QuestShell>
       <Link to={`/codequest/${challenge.language_slug}/${challenge.level_order}`} className="text-sm font-semibold text-primary">
         ← {t("codequest.backToLevel")}
       </Link>
@@ -413,6 +414,6 @@ export default function QuestChallenge() {
           )}
         </div>
       )}
-    </div>
+    </QuestShell>
   );
 }

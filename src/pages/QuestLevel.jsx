@@ -11,6 +11,7 @@ import { isBossLevel } from "@/components/quest/questLabels";
 import { LEVEL_CLEARED_MESSAGES, WIN_MESSAGES, pickMessage } from "@/components/quest/questMessages";
 import XpBar from "@/components/quest/XpBar";
 import { celebrate, celebrateLevelUp } from "@/lib/gameFx";
+import QuestShell from "@/components/quest/QuestShell";
 
 export default function QuestLevel() {
   const { slug, order } = useParams();
@@ -102,7 +103,7 @@ export default function QuestLevel() {
 
   if (loading) {
     return (
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+      <div className="quest-app min-h-screen bg-background max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <p className="text-sm text-muted-foreground">{t("codequest.loading")}</p>
       </div>
     );
@@ -112,7 +113,7 @@ export default function QuestLevel() {
   const level = levels.find((entry) => entry.order === levelOrder) || null;
   if (!language || !level) {
     return (
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+      <div className="quest-app min-h-screen bg-background max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <EmptyState title={t("codequest.levelMissingTitle")} description={t("codequest.levelMissingBody")} />
       </div>
     );
@@ -128,7 +129,7 @@ export default function QuestLevel() {
   const next = position >= 0 && position < levels.length - 1 ? levels[position + 1] : null;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+    <QuestShell>
       <Link to="/codequest" className="text-sm font-semibold text-primary">
         ← {t("codequest.backToMap")}
       </Link>
@@ -225,6 +226,6 @@ export default function QuestLevel() {
           <span />
         )}
       </div>
-    </div>
+    </QuestShell>
   );
 }
