@@ -31,7 +31,9 @@
           "call": "invoke_backend_function",
           "with": {
             "function_name": "syncAITools",
-            "args": {}
+            "args": {
+              "sync_key": "d8b521c89c5c7f201c66d60c9146e9f4"
+            }
           },
           "then": "end",
           "x-base44": {
