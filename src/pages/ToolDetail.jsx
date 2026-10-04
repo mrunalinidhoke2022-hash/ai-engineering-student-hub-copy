@@ -6,6 +6,7 @@ import BookmarkButton from "@/components/tools/BookmarkButton";
 import ToolVerificationNote from "@/components/tools/ToolVerificationNote";
 import ReportToolDialog from "@/components/tools/ReportToolDialog";
 import EmptyState from "@/components/common/EmptyState";
+import PageMeta from "@/components/common/PageMeta";
 import { base44 } from "@/api/base44Client";
 
 function Section({ title, children }) {
@@ -35,6 +36,7 @@ export default function ToolDetail() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+      <PageMeta title={`${tool.name} | Engineering Hub`} description={tool.description} />
       <Link to="/ai-tools" className="text-sm font-semibold text-primary">← Back to AI Tools</Link>
 
       <div className="mt-4 flex items-start justify-between gap-4 flex-wrap">

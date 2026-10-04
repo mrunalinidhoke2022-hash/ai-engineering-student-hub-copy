@@ -3,6 +3,7 @@ import { Search } from "lucide-react";
 import ToolCard from "@/components/tools/ToolCard";
 import FilterChips from "@/components/common/FilterChips";
 import EmptyState from "@/components/common/EmptyState";
+import PageMeta from "@/components/common/PageMeta";
 import { base44 } from "@/api/base44Client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import useSavedBookmarks from "@/hooks/useSavedBookmarks";
@@ -38,6 +39,10 @@ export default function AITools() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+      <PageMeta
+        title="AI Tools Directory for Engineering Students | Engineering Hub"
+        description="Free and freemium AI tools for coding, research, design and presentations — each one reviewed with beginner tutorials and example prompts."
+      />
       <PullToRefresh onRefresh={load} />
       <h1 className="font-heading font-extrabold text-3xl">{t("aitools.title")}</h1>
       <p className="text-muted-foreground mt-1">{t("aitools.subtitle")}</p>
