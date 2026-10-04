@@ -1,0 +1,179 @@
+{
+  "name": "PaymentTransaction",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "account_id": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "email": {
+      "type": "string",
+      "maxLength": 160
+    },
+    "subscription_id": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "plan_id": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "plan_slug": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "plan_tier": {
+      "type": "string",
+      "enum": [
+        "free",
+        "student",
+        "pro",
+        "pass"
+      ]
+    },
+    "billing_cycle": {
+      "type": "string",
+      "enum": [
+        "free",
+        "monthly",
+        "yearly",
+        "one_time"
+      ],
+      "default": "one_time"
+    },
+    "amount": {
+      "type": "number",
+      "default": 0
+    },
+    "discount_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "amount_due": {
+      "type": "number",
+      "default": 0
+    },
+    "currency": {
+      "type": "string",
+      "maxLength": 8,
+      "default": "INR"
+    },
+    "coupon_code": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "payment_provider": {
+      "type": "string",
+      "enum": [
+        "razorpay"
+      ],
+      "default": "razorpay"
+    },
+    "provider_order_id": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "provider_payment_id": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "provider_subscription_id": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "provider_invoice_id": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "signature_verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "created",
+        "pending",
+        "authorized",
+        "captured",
+        "failed",
+        "refunded",
+        "partially_refunded",
+        "cancelled",
+        "expired"
+      ],
+      "default": "created"
+    },
+    "failure_reason": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "refund_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "refunded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "receipt": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "paid_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 500
+    }
+  },
+  "required": [
+    "user_id",
+    "plan_slug",
+    "amount",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

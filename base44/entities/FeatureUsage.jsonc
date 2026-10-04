@@ -1,0 +1,77 @@
+{
+  "name": "FeatureUsage",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "feature_key": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "period_day": {
+      "type": "string",
+      "maxLength": 10
+    },
+    "period_month": {
+      "type": "string",
+      "maxLength": 7
+    },
+    "day_count": {
+      "type": "number",
+      "default": 0
+    },
+    "month_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_used_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_blocked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "plan_slug": {
+      "type": "string",
+      "maxLength": 40
+    }
+  },
+  "required": [
+    "user_id",
+    "feature_key",
+    "period_day",
+    "period_month"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

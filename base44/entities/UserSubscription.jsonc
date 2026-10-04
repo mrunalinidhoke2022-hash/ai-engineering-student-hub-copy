@@ -1,0 +1,182 @@
+{
+  "name": "UserSubscription",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "account_id": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "email": {
+      "type": "string",
+      "maxLength": 160
+    },
+    "full_name": {
+      "type": "string",
+      "maxLength": 160
+    },
+    "plan_id": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "plan_slug": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "plan_name": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "plan_tier": {
+      "type": "string",
+      "enum": [
+        "free",
+        "student",
+        "pro",
+        "pass"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "trial",
+        "active",
+        "past_due",
+        "cancelled",
+        "expired",
+        "payment_failed",
+        "refunded",
+        "paused"
+      ],
+      "default": "active"
+    },
+    "billing_cycle": {
+      "type": "string",
+      "enum": [
+        "free",
+        "monthly",
+        "yearly",
+        "one_time"
+      ],
+      "default": "free"
+    },
+    "amount_paid": {
+      "type": "number",
+      "default": 0
+    },
+    "currency": {
+      "type": "string",
+      "maxLength": 8,
+      "default": "INR"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "next_billing_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "grace_until": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "cancelled_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "cancellation_reason": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "cancel_at_period_end": {
+      "type": "boolean",
+      "default": false
+    },
+    "auto_renew": {
+      "type": "boolean",
+      "default": false
+    },
+    "razorpay_customer_id": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "razorpay_subscription_id": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "razorpay_payment_id": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "razorpay_order_id": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "replaces_subscription_id": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "last_verified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "free_default",
+        "purchase",
+        "webhook",
+        "admin",
+        "reconciliation"
+      ],
+      "default": "purchase"
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 500
+    }
+  },
+  "required": [
+    "user_id",
+    "plan_slug",
+    "status",
+    "billing_cycle"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "name": "PaymentWebhookEvent",
+  "type": "object",
+  "properties": {
+    "provider": {
+      "type": "string",
+      "enum": [
+        "razorpay"
+      ],
+      "default": "razorpay"
+    },
+    "event_id": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "event_type": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "payload_hash": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "signature_verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "received",
+        "processed",
+        "failed",
+        "ignored",
+        "duplicate"
+      ],
+      "default": "received"
+    },
+    "processed": {
+      "type": "boolean",
+      "default": false
+    },
+    "processed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "processing_error": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "attempts": {
+      "type": "number",
+      "default": 0
+    },
+    "last_attempt_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "related_user_id": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "related_payment_id": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "related_subscription_id": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "provider_created_at": {
+      "type": "number",
+      "default": 0
+    },
+    "payload": {
+      "type": "string",
+      "maxLength": 4000
+    }
+  },
+  "required": [
+    "provider",
+    "event_id",
+    "event_type"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
