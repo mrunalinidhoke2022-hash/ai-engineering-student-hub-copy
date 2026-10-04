@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
-import { normalizeName, normalizeEmail, normalizeMobile, findNameConflict } from '../../shared/identity.ts';
+import { normalizeName, normalizeEmail, normalizeMobile, normalizeUsername, validateUsername, findNameConflict, findUsernameConflict } from '../../shared/identity.ts';
 import { throttle, clientIp } from '../../shared/throttle.ts';
 import { serverError } from '../../shared/http.ts';
 
@@ -14,10 +14,23 @@ export default async function (req) {
     const fullName = normalizeName(body.full_name);
     const email = normalizeEmail(body.email);
     const mobile = normalizeMobile(body.mobile);
+    const username = normalizeUsername(body.username);
 
     if (!fullName || !email || !mobile) {
       return Response.json(
         { available: false, message: 'Full name, email address and mobile number are required.' },
+        { status: 400 }
+      );
+    }
+
+    if (username && !validateUsername(username)) {
+      return Response.json(
+        {
+          available: false,
+          field: 'username',
+          code: 'INVALID_USERNAME',
+          message: 'That User ID cannot be used. Use 3–40 letters, numbers, spaces or hyphens.',
+        },
         { status: 400 }
       );
     }
@@ -59,9 +72,27 @@ export default async function (req) {
     if (nameConflict) {
       return Response.json({
         available: false,
+        field: 'name',
+        code: 'NAME_TAKEN',
         message:
           'This name is already registered. Sign in with your registered account, or use a different name.',
       });
+    }
+
+    // The User ID is answered for, and the email and mobile number are not: the User ID is a
+    // public handle — teammates search by it and it can be used to sign in — so a student who
+    // has already taken one must be told, while "is this address registered?" stays unanswerable
+    // to anyone who has not proved they own the account. See findNameConflict.
+    if (username) {
+      const usernameConflict = await findUsernameConflict(base44, username);
+      if (usernameConflict) {
+        return Response.json({
+          available: false,
+          field: 'username',
+          code: 'USERNAME_TAKEN',
+          message: 'This User ID is already taken. Please choose another one.',
+        });
+      }
     }
 
     return Response.json({ available: true });

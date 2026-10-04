@@ -8,8 +8,6 @@ import { hashOtp, sameHash, isExpired, isLocked, secondsLeft, OTP_MAX_ATTEMPTS, 
 // Every decision is made here: the client can neither mark a number verified nor skip the check,
 // and the number only counts as verified once a matching code has actually been spent.
 
-const VERIFIED_WINDOW_MINUTES = 60;
-
 export default async function (req) {
   try {
     const base44 = createClientFromRequest(req);
@@ -111,16 +109,11 @@ export default async function (req) {
     });
 
     if (profile) {
-      await profiles.update(profile.id, {
-        mobile,
-        mobile_key: mobile,
-        mobile_verified: true,
-        mobile_verified_at: new Date().toISOString(),
-      });
+      await profiles.update(profile.id, { mobile, mobile_key: mobile, mobile_verified: true });
       return Response.json({ verified: true, mobileUpdated: profile.mobile_key !== mobile });
     }
 
-    return Response.json({ verified: true, verifiedWindowMinutes: VERIFIED_WINDOW_MINUTES });
+    return Response.json({ verified: true });
   } catch (error) {
     return serverError(error);
   }
