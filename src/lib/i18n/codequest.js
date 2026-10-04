@@ -83,6 +83,7 @@ export const codequestEn = {
   "codequest.submitFailed": "That could not be checked just now. Please try again.",
   "codequest.heroTitle": "🎮 CODEQUEST",
   "codequest.heroTagline": "Learn code. Beat challenges. Level up. Build real projects.",
+  "codequest.player": "Player",
   "codequest.startCoding": "Start coding",
   "codequest.continueCoding": "Continue",
   "codequest.startTrack": "Start",

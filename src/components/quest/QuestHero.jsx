@@ -6,7 +6,7 @@ import XpBar from "@/components/quest/XpBar";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { levelName } from "@/lib/questLevels";
 
-export default function QuestHero({ quest, level, trackName, badges, languagesCount, daily, onStart, onRoadmap, onDaily, onAchievements }) {
+export default function QuestHero({ quest, level, playerName, trackName, badges, languagesCount, daily, onStart, onRoadmap, onDaily, onAchievements }) {
   const { t } = useLanguage();
   const currentLevel = Number(level?.level) || 1;
   const xpInto = Number(level?.xpIntoLevel) || 0;
@@ -27,8 +27,8 @@ export default function QuestHero({ quest, level, trackName, badges, languagesCo
             {currentLevel}
           </span>
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">{t("codequest.level")}</p>
-            <p className="font-game font-extrabold text-lg leading-tight">{levelName(currentLevel)}</p>
+            <p className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">{t("codequest.player")}</p>
+            <p className="font-game font-extrabold text-lg leading-tight">{playerName || levelName(currentLevel)}</p>
           </div>
         </div>
       </div>

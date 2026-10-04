@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ChevronDown, Rocket, Star } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { useAuth } from "@/lib/AuthContext";
 import EmptyState from "@/components/common/EmptyState";
 import QuestHero from "@/components/quest/QuestHero";
 import QuestStatsBar from "@/components/quest/QuestStatsBar";
@@ -31,7 +32,10 @@ const scrollToId = (id) => document.getElementById(id)?.scrollIntoView({ block: 
 
 export default function CodeQuest() {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const navigate = useNavigate();
+  // The hero shows the student by name; the email prefix covers accounts with no full name set.
+  const playerName = user?.full_name?.split(" ")[0] || user?.email?.split("@")[0] || "";
   const [languages, setLanguages] = useState([]);
   const [lessonCounts, setLessonCounts] = useState({});
   const [challengeCounts, setChallengeCounts] = useState({});
@@ -225,6 +229,7 @@ export default function CodeQuest() {
       <QuestHero
         quest={quest}
         level={level}
+        playerName={playerName}
         trackName={recommended?.name}
         badges={earnedKeys.size}
         languagesCount={languages.length}
