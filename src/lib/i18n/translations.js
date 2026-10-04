@@ -248,7 +248,7 @@ export const translations = {
     "register.mobile.attemptsLeft": "{{count}} attempts left.",
 
     "register.done.title": "Finishing up",
-    "register.done.desc": "Creating your identity on DevLaunch...",
+    "register.done.desc": "Creating your identity on Engineering Hub...",
     "register.done.created": "Your account is ready.",
     "register.done.goHome": "Go to dashboard",
     "register.done.errTaken": "One of your details is already registered.",

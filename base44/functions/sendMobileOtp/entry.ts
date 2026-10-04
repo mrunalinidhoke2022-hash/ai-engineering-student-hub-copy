@@ -30,7 +30,7 @@ const deliver = async (mobile, message, config) => {
     const response = await fetch(config.url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${config.apiKey}` },
-      body: JSON.stringify({ to: `+91${mobile}`, message, sender: 'DEVLAUNCH' }),
+      body: JSON.stringify({ to: `+91${mobile}`, message, sender: 'ENGHUB' }),
       signal: AbortSignal.timeout(SMS_TIMEOUT_MS),
     });
     return response.ok;
@@ -102,7 +102,7 @@ export default async function (req) {
     if (record?.verified) return Response.json({ delivery: 'already_verified', verified: true });
 
     const otp = await createOtp();
-    const text = `${otp.code} is your DevLaunch verification code. It expires in 5 minutes. Never share it with anyone.`;
+    const text = `${otp.code} is your Engineering Hub verification code. It expires in 5 minutes. Never share it with anyone.`;
 
     const sent = await deliver(mobile, text, config);
     if (!sent) {

@@ -268,7 +268,7 @@ export const fetchSource = async (source) => {
   try {
     const response = await fetch(url, {
       // Identifies the app politely and asks for the compact feed; one request per source per run.
-      headers: { 'User-Agent': 'DevLaunchContentBot/1.0 (+student learning platform)', Accept: 'application/rss+xml, application/atom+xml, application/json, text/xml;q=0.9, */*;q=0.5' },
+      headers: { 'User-Agent': 'EngineeringHubContentBot/1.0 (+student learning platform)', Accept: 'application/rss+xml, application/atom+xml, application/json, text/xml;q=0.9, */*;q=0.5' },
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     });
     if (!response.ok) return { status: 'error', error: `Source replied with status ${response.status}.`, items: [] };
@@ -413,7 +413,7 @@ export const stageProposals = async (base44, { fetched, settings, knownTools }) 
     .map((item) => `#${item.source_index} [${item.category}] from ${item.source_name}\nTitle: ${item.title}\nLink: ${item.source_url}\nText: ${item.text}`)
     .join('\n\n');
 
-  const prompt = `You keep the content of "DevLaunch", a student platform for AI tools and engineering skills, up to date.
+  const prompt = `You keep the content of "Engineering Hub", a student platform for AI tools and engineering skills, up to date.
 Today is ${today}.
 
 Below are ${candidates.length} items pulled from official feeds the platform trusts. Each starts with "#<index>".
