@@ -1,11 +1,11 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
-import { normalizeName, normalizeEmail, normalizeMobile, findConflicts } from '../../shared/identity.ts';
+import { normalizeName, normalizeEmail, normalizeMobile, findNameConflict } from '../../shared/identity.ts';
 import { throttle, clientIp } from '../../shared/throttle.ts';
 import { serverError } from '../../shared/http.ts';
 
-// Public pre-check run before an account is created: is this name / email / mobile free?
+// Public pre-check run before an account is created: is this full name still free?
 // It runs before sign-in exists, so it cannot verify the caller — it is rate limited
-// instead (per connection and per identifier) and returns no recorded identity data.
+// instead (per connection and per submitted identifier) and answers only about the name.
 export default async function (req) {
   try {
     const base44 = createClientFromRequest(req);
@@ -49,16 +49,18 @@ export default async function (req) {
       );
     }
 
-    const conflict = await findConflicts(base44, { fullName, email, mobile });
-    if (conflict) {
-      // This check runs before sign-in, so it must not confirm WHICH detail is registered:
-      // a per-field answer let a script probe candidate emails, mobiles and names and harvest
-      // the app's student list. One generic answer covers every conflict; the verified steps
-      // (completeRegistration, updateProfile) still name the exact field to a signed-in user.
+    // Only the name is compared — see findNameConflict. The submitted email and mobile number
+    // are still required and still counted, but they never decide the answer: comparing them
+    // here let anyone send a throwaway name and number alongside a candidate address and read
+    // that address's registration status off the yes/no reply. Email and mobile duplicates are
+    // still refused, with the exact field named, by completeRegistration and updateProfile,
+    // which only run for a signed-in caller.
+    const nameConflict = await findNameConflict(base44, fullName);
+    if (nameConflict) {
       return Response.json({
         available: false,
         message:
-          'Some of these details are already registered. Sign in with your registered account, or use different ones.',
+          'This name is already registered. Sign in with your registered account, or use a different name.',
       });
     }
 

@@ -58,6 +58,22 @@ export const findConflicts = async (base44, values, ignoreId) => {
   return null;
 };
 
+// Name-only conflict check, for the anonymous pre-check (checkIdentity).
+//
+// Comparing the email or the mobile number there turned the endpoint into an account
+// enumeration oracle: a stranger could send a throwaway name and number plus a candidate
+// address and read that address's registration status straight off the yes/no answer — and
+// with rotating connections, harvest the app's student list without ever signing in.
+// The name is the one value a caller supplies as their own identity, so answering for it
+// reveals nothing they did not already hold. Email and mobile duplicates are still refused —
+// with the exact field named — by completeRegistration and updateProfile, which only ever run
+// for a signed-in caller.
+export const findNameConflict = async (base44, fullName) => {
+  const key = nameKey(fullName);
+  if (!key) return null;
+  return findOne(base44, { name_key: key });
+};
+
 // SANCHITA-BHASKAR-CHIMTE-001, incrementing only if that exact User ID is taken.
 export const nextUserId = async (base44, fullName) => {
   const base = buildUserId(fullName) || "STUDENT";
