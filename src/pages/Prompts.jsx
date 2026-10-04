@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Copy, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import FilterChips from "@/components/common/FilterChips";
 import EmptyState from "@/components/common/EmptyState";
 import BookmarkButton from "@/components/tools/BookmarkButton";
@@ -9,19 +10,46 @@ import PullToRefresh from "@/components/common/PullToRefresh";
 
 const CATEGORIES = ["Coding", "Debugging", "Research", "Project Ideas", "Documentation", "PPT", "UI/UX", "Resume", "Interview", "Hackathon", "Learning", "SQL", "GitHub", "Testing"];
 
+const PAGE_SIZE = 60;
+
 export default function Prompts() {
   const [prompts, setPrompts] = useState([]);
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [cursor, setCursor] = useState(null);
+  const [hasMore, setHasMore] = useState(false);
+  const [total, setTotal] = useState(0);
   const [copiedId, setCopiedId] = useState(null);
   const { isSaved, toggle } = useSavedBookmarks("prompt", prompts, "Research");
 
   const load = () => {
     setLoading(true);
     const query = category ? { category } : {};
-    return base44.entities.Prompt.filter(query, { sort: "title", limit: 60 })
-      .then((page) => setPrompts(page.items))
+    return Promise.all([
+      base44.entities.Prompt.filter(query, { sort: "title", limit: PAGE_SIZE }),
+      base44.entities.Prompt.count(query),
+    ])
+      .then(([page, count]) => {
+        setPrompts(page.items);
+        setCursor(page.next_cursor);
+        setHasMore(Boolean(page.has_more));
+        setTotal(count);
+      })
       .finally(() => setLoading(false));
+  };
+
+  const loadMore = () => {
+    if (!hasMore || loadingMore) return;
+    setLoadingMore(true);
+    const query = category ? { category } : {};
+    return base44.entities.Prompt.filter(query, { sort: "title", limit: PAGE_SIZE, cursor })
+      .then((page) => {
+        setPrompts((prev) => [...prev, ...page.items]);
+        setCursor(page.next_cursor);
+        setHasMore(Boolean(page.has_more));
+      })
+      .finally(() => setLoadingMore(false));
   };
 
   useEffect(() => {
@@ -50,7 +78,11 @@ export default function Prompts() {
         ) : prompts.length === 0 ? (
           <EmptyState title="No prompts in this category yet" />
         ) : (
-          <div className="grid sm:grid-cols-2 gap-4">
+          <>
+            <p className="text-xs text-muted-foreground mb-3">
+              Showing {prompts.length} of {total} prompts
+            </p>
+            <div className="grid sm:grid-cols-2 gap-4">
             {prompts.map((p) => (
               <div key={p.id} className="bg-card border border-border rounded-lg p-5 flex flex-col gap-3">
                 <div>
@@ -73,7 +105,15 @@ export default function Prompts() {
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+            {hasMore && (
+              <div className="mt-6 flex justify-center">
+                <Button variant="outline" onClick={loadMore} disabled={loadingMore}>
+                  {loadingMore ? "Loading more..." : "Load more prompts"}
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
