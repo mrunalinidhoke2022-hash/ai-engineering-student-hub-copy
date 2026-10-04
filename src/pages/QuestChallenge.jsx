@@ -8,6 +8,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useToast } from "@/components/ui/use-toast";
 import EmptyState from "@/components/common/EmptyState";
 import { AUTO_GRADED_TYPES, CHALLENGE_TYPE_LABELS, DIFFICULTY_CLASSES } from "@/components/quest/questLabels";
+import { BOSS_MESSAGES, WIN_MESSAGES, WRONG_MESSAGES, pickMessage } from "@/components/quest/questMessages";
 
 const WORKSPACE_NOTICE =
   "This platform never runs student code on its own servers. Automated checking uses an external secure sandbox, so until that service is connected, build and test your solution yourself and compare the output with the expected output.";
@@ -333,6 +334,12 @@ export default function QuestChallenge() {
               <p className="font-semibold text-success flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4" /> {t("codequest.missionComplete")} +{feedback.reward?.xp_awarded} XP
               </p>
+              <p className="text-sm text-success mt-1">
+                {pickMessage(
+                  challenge.type === "build_mini_app" || challenge.type === "build_function" ? BOSS_MESSAGES : WIN_MESSAGES,
+                  challenge.title?.length || 0
+                )}
+              </p>
               {feedback.reward?.xp_bonus > 0 && (
                 <p className="text-sm text-success mt-1">
                   {t("codequest.bonusXp", { xp: feedback.reward.xp_bonus })}
@@ -360,6 +367,7 @@ export default function QuestChallenge() {
               <p className="text-xs text-muted-foreground mt-1">
                 {t("codequest.attemptsSoFar", { count: feedback.attempts || 0 })}
               </p>
+              <p className="text-sm mt-1">{pickMessage(WRONG_MESSAGES, feedback.attempts)}</p>
               {feedback.explanation && (
                 <div className="mt-3">
                   <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("codequest.explanation")}</p>

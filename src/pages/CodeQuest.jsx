@@ -6,6 +6,7 @@ import EmptyState from "@/components/common/EmptyState";
 import QuestStatsBar from "@/components/quest/QuestStatsBar";
 import LevelMap from "@/components/quest/LevelMap";
 import { ACHIEVEMENT_ICONS, isBossLevel } from "@/components/quest/questLabels";
+import { GUIDE_STEPS } from "@/components/quest/questMessages";
 
 const CRITERIA_LABELS = {
   xp_total: "XP",
@@ -27,6 +28,7 @@ export default function CodeQuest() {
   const [activeSlug, setActiveSlug] = useState("");
   const [content, setContent] = useState({ lessons: [], challenges: [] });
   const [showOverview, setShowOverview] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
 
@@ -53,6 +55,7 @@ export default function CodeQuest() {
         setCompletedLessons(progressPage.items || []);
         setSolvedAttempts(attemptPage.items || []);
         setQuest(stats.data?.quest || null);
+        setShowGuide(!(Number(stats.data?.quest?.xp) > 0));
         setLevel(stats.data?.level || null);
         setAchievements(badgePage.items || []);
       } catch (error) {
@@ -164,6 +167,27 @@ export default function CodeQuest() {
           </div>
         </div>
       )}
+
+      <div className="mt-6 bg-card border border-border rounded-lg">
+        <button
+          type="button"
+          onClick={() => setShowGuide((value) => !value)}
+          className="w-full flex items-center justify-between gap-3 p-4 text-left"
+        >
+          <span className="font-semibold text-sm">{t("codequest.howItWorks")}</span>
+          <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${showGuide ? "rotate-180" : ""}`} />
+        </button>
+        {showGuide && (
+          <div className="px-4 pb-4 pt-4 border-t border-border grid sm:grid-cols-2 gap-4">
+            {GUIDE_STEPS.map((step) => (
+              <div key={step.title}>
+                <p className="font-semibold text-sm">{step.title}</p>
+                <p className="text-sm text-muted-foreground mt-0.5">{step.body}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {languages.length === 0 ? (
         <div className="mt-8">

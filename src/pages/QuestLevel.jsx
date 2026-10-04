@@ -8,6 +8,7 @@ import EmptyState from "@/components/common/EmptyState";
 import LessonCard from "@/components/quest/LessonCard";
 import ChallengeCard from "@/components/quest/ChallengeCard";
 import { isBossLevel } from "@/components/quest/questLabels";
+import { LEVEL_CLEARED_MESSAGES, WIN_MESSAGES, pickMessage } from "@/components/quest/questMessages";
 
 export default function QuestLevel() {
   const { slug, order } = useParams();
@@ -64,7 +65,7 @@ export default function QuestLevel() {
     if (!reward || reward.already_completed) return;
     const gained = [`+${reward.xp_awarded} XP`];
     if (reward.xp_bonus) gained.push(`+${reward.xp_bonus} bonus XP`);
-    toast({ description: `${t("codequest.missionComplete")} ${gained.join(" · ")}` });
+    toast({ description: `${pickMessage(WIN_MESSAGES, reward.xp_awarded)} ${gained.join(" · ")}` });
     if (currentLevel && reward.level?.level > currentLevel.level) {
       toast({ description: t("codequest.levelUp", { level: reward.level.level }) });
     }
@@ -155,6 +156,17 @@ export default function QuestLevel() {
       {total > 0 && (
         <div className="h-1.5 rounded-full bg-secondary mt-4 overflow-hidden">
           <div className="h-full bg-primary" style={{ width: `${pct}%` }} />
+        </div>
+      )}
+
+      {total > 0 && done === total && (
+        <div className="mt-4 border border-success/40 bg-success/10 rounded-lg p-4">
+          <p className="font-semibold text-success">{pickMessage(LEVEL_CLEARED_MESSAGES, levelOrder)}</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            {next
+              ? t("codequest.nextUp", { level: next.title })
+              : t("codequest.trackComplete", { language: language.name })}
+          </p>
         </div>
       )}
 
