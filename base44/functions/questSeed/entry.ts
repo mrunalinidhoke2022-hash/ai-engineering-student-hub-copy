@@ -119,6 +119,7 @@ const CONTENT_SCHEMA = {
         type: 'object',
         properties: {
           kind: { type: 'string' },
+          title: { type: 'string' },
           type: { type: 'string' },
           topic: { type: 'string' },
           problem: { type: 'string' },
@@ -145,7 +146,7 @@ const CONTENT_SCHEMA = {
           accepted_answers: { type: 'array', items: { type: 'string' } },
           explanation: { type: 'string' }
         },
-        required: ['kind', 'type', 'topic', 'problem', 'expected_output', 'hints', 'answer', 'explanation']
+        required: ['kind', 'title', 'type', 'topic', 'problem', 'expected_output', 'hints', 'answer', 'explanation']
       }
     }
   },
@@ -217,6 +218,7 @@ CHALLENGES — exactly ${CHALLENGES_PER_LEVEL}, in this order, each carrying its
 ${planFor(level.order).map((slot) => planLine(language, slot)).join('\n')}
 
 Rules for every challenge:
+- "title": a short task title of two to six words, at most 80 characters, saying what the student has to do.
 - "topic" must be one of: ${topics.join(', ')}. Never invent a new topic name.
 - "problem": the complete task, at most 900 characters, including any code snippet.
 - "expected_input" and "expected_output": plain words, "None" when there is no input.
@@ -310,9 +312,13 @@ const buildLevel = async (base44: any, language: any, level: any) => {
     if (kind && !byKind[kind]) byKind[kind] = challenge;
   });
 
+  const rawChallenges = Array.isArray(result?.challenges) ? result.challenges : [];
+
+  // Matched by the kind the prompt asked for, and falling back to order so a model that labels
+  // them differently still fills every slot.
   const slots = plan
-    .map((slot: any) => {
-      const raw: any = byKind[slot.kind] || {};
+    .map((slot: any, index: number) => {
+      const raw: any = byKind[slot.kind] || rawChallenges[index] || {};
       return {
         row: sanitizeChallenge({
           ...raw,
@@ -332,7 +338,11 @@ const buildLevel = async (base44: any, language: any, level: any) => {
       };
     })
     .filter((slot: any) => slot.row.title && slot.row.problem);
-  if (slots.length < CHALLENGES_PER_LEVEL) throw new Error('The challenges for this level came back incomplete');
+  if (slots.length < CHALLENGES_PER_LEVEL) {
+    throw new Error(
+      `The challenges for this level came back incomplete: returned ${rawChallenges.length}, usable ${slots.length}, sample ${JSON.stringify(rawChallenges[0] || {}).slice(0, 500)}`
+    );
+  }
 
   const createdLessons = await base44.entities.Lesson.bulkCreate(lessons);
 
@@ -411,6 +421,7 @@ export default async function (req: Request): Promise<Response> {
 
     return Response.json({ language: slug, levels_total: levels.length, generated, pending: remaining, complete });
   } catch (error) {
-    return serverError(error);
+    console.error('questSeed failed', error);
+    return Response.json({ error: String(error?.message || error) }, { status: 500 });
   }
 }
