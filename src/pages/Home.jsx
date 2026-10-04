@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import ShowcaseStrip from "@/components/home/ShowcaseStrip";
+import ChallengeOfTheDay from "@/components/home/ChallengeOfTheDay";
 import { QUICK_TOPICS } from "@/data/quickTopics";
 
 export default function Home() {
@@ -137,6 +138,8 @@ export default function Home() {
               <p className="text-sm text-slate-300 mt-1">{t("home.mentorDesc")}</p>
               <span className="inline-flex items-center gap-1 text-sm font-semibold text-indigo-300 mt-3">{t("home.mentorCta")} <ArrowRight className="w-4 h-4" /></span>
             </Link>
+
+            <ChallengeOfTheDay />
 
             <div className="bg-card border border-border rounded-lg p-6">
               <h3 className="font-heading font-bold text-sm mb-3">{t("home.promptsTitle")}</h3>
