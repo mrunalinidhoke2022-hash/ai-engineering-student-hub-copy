@@ -413,7 +413,7 @@ export const stageProposals = async (base44, { fetched, settings, knownTools }) 
     .map((item) => `#${item.source_index} [${item.category}] from ${item.source_name}\nTitle: ${item.title}\nLink: ${item.source_url}\nText: ${item.text}`)
     .join('\n\n');
 
-  const prompt = `You keep the content of "Engineering Hub", a student platform for AI tools and engineering skills, up to date.
+  const prompt = `You keep the content of "DEVLAUNCH", a student platform for AI tools and engineering skills, up to date.
 Today is ${today}.
 
 Below are ${candidates.length} items pulled from official feeds the platform trusts. Each starts with "#<index>".

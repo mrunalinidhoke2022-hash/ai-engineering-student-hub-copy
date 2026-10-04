@@ -102,7 +102,7 @@ export default async function (req) {
     if (record?.verified) return Response.json({ delivery: 'already_verified', verified: true });
 
     const otp = await createOtp();
-    const text = `${otp.code} is your Engineering Hub verification code. It expires in 5 minutes. Never share it with anyone.`;
+    const text = `${otp.code} is your DEVLAUNCH verification code. It expires in 5 minutes. Never share it with anyone.`;
 
     const sent = await deliver(mobile, text, config);
     if (!sent) {

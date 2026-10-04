@@ -40,7 +40,7 @@ export default function AITools() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
       <PageMeta
-        title="AI Tools Directory for Engineering Students | Engineering Hub"
+        title="AI Tools Directory for Engineering Students | DEVLAUNCH"
         description="Free and freemium AI tools for coding, research, design and presentations — each one reviewed with beginner tutorials and example prompts."
       />
       <PullToRefresh onRefresh={load} />

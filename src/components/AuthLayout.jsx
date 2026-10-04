@@ -27,7 +27,7 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
             <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-cyan/20 ring-1 ring-brand-ink/20">
               <Rocket className="h-5 w-5 text-brand-cyan" aria-hidden="true" />
             </span>
-            <span className="font-heading text-lg font-extrabold tracking-tight">Engineering Hub</span>
+            <span className="font-heading text-lg font-extrabold tracking-tight">DEVLAUNCH</span>
           </Link>
           <LanguageSwitcher compact />
         </div>
@@ -59,6 +59,14 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
           <span className="mx-2">·</span>
           <Link to="/contact" className="transition-colors hover:text-brand-ink">
             {t("auth.contact")}
+          </Link>
+          <span className="mx-2">·</span>
+          <Link to="/privacy" className="transition-colors hover:text-brand-ink">
+            Privacy Policy
+          </Link>
+          <span className="mx-2">·</span>
+          <Link to="/terms" className="transition-colors hover:text-brand-ink">
+            Terms of Use
           </Link>
         </p>
       </div>

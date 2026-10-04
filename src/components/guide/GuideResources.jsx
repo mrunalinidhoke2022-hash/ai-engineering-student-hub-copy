@@ -11,7 +11,7 @@ export default function GuideResources({ internal, links }) {
 
       {internal.length > 0 && (
         <div className="mt-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Inside Engineering Hub</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Inside DEVLAUNCH</p>
           <div className="mt-2 flex flex-wrap gap-2">
             {internal.map((item) => (
               <Link

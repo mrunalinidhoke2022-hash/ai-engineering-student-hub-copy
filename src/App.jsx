@@ -48,6 +48,8 @@ const Leaderboard = lazy(() => import('@/pages/Leaderboard'));
 const CodeQuest = lazy(() => import('@/pages/CodeQuest'));
 const QuestLevel = lazy(() => import('@/pages/QuestLevel'));
 const QuestChallenge = lazy(() => import('@/pages/QuestChallenge'));
+const Privacy = lazy(() => import('@/pages/Privacy'));
+const Terms = lazy(() => import('@/pages/Terms'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -84,6 +86,8 @@ const AuthenticatedApp = () => {
       <Route element={<PublicLayout />}>
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
       </Route>
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<AppLayout />}>

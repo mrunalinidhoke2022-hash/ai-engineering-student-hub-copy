@@ -8,7 +8,7 @@ const REASONS = [
   { icon: Bug, text: "Report a broken page, wrong link or a tool that no longer works." },
   { icon: Lightbulb, text: "Suggest an AI tool, learning path or coding problem we should add." },
   { icon: Trophy, text: "Ask about hackathon preparation, problem statements or project ideas." },
-  { icon: Users, text: "Invite your college club to use Engineering Hub for a workshop." },
+  { icon: Users, text: "Invite your college club to use DEVLAUNCH for a workshop." },
 ];
 
 export default function Contact() {
@@ -20,7 +20,7 @@ export default function Contact() {
             <Mail className="w-3.5 h-3.5" /> Contact
           </span>
           <h1 className="font-heading font-extrabold tracking-tight text-4xl sm:text-5xl mt-5">
-            Talk to the Engineering Hub team
+            Talk to the DEVLAUNCH team
           </h1>
           <p className="mt-5 text-slate-300 text-base sm:text-lg">
             Questions, feedback and content suggestions are always welcome. Reach the MrunalTech team

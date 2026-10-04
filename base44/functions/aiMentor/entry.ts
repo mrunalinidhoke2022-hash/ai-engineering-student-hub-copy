@@ -47,7 +47,7 @@ const reviewCode = async (base44: any, body: any): Promise<Response> => {
     .map((path: any) => `- ${path.title} (${path.category}): ${(path.steps || []).map((step: any) => step.title).join(' | ')}`)
     .join('\n');
 
-  const prompt = `You are a patient programming mentor reviewing one solution from a beginner engineering student on the "Engineering Hub" platform.
+  const prompt = `You are a patient programming mentor reviewing one solution from a beginner engineering student on the "DEVLAUNCH" platform.
 
 Problem: ${problem.title} (${problem.language} · ${problem.topic} · ${problem.difficulty})
 Problem statement:

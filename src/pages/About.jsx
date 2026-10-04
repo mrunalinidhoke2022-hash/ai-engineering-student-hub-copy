@@ -42,13 +42,13 @@ export default function About() {
       <section className="bg-brand-navy text-white">
         <div className="max-w-4xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-cyan bg-brand-cyan/10 border border-brand-cyan/30 rounded-full px-3 py-1">
-            <Sparkles className="w-3.5 h-3.5" /> About Engineering Hub
+            <Sparkles className="w-3.5 h-3.5" /> About DEVLAUNCH
           </span>
           <h1 className="font-heading font-extrabold tracking-tight text-4xl sm:text-5xl mt-5">
             One platform for every engineering student
           </h1>
           <p className="mt-6 text-slate-300 text-base sm:text-lg leading-relaxed">
-            Engineering Hub is a free learning and building platform for engineering students. Instead of
+            DEVLAUNCH is a free learning and building platform for engineering students. Instead of
             jumping between dozens of browser tabs, blogs and YouTube playlists, students use one place to
             find the right AI tool, follow a structured learning path, practise coding problems, generate a
             complete project roadmap from a single idea, and prepare for hackathons from team formation to
@@ -78,7 +78,7 @@ export default function About() {
             <Users className="w-5 h-5 text-primary" /> Who it's for
           </h2>
           <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
-            Engineering Hub is built for students who want to build things but don't know where to start.
+            DEVLAUNCH is built for students who want to build things but don't know where to start.
             That includes first-year students meeting programming for the first time, second and third-year
             students choosing a specialisation, self-taught learners without a mentor on campus, and student
             hackathon teams that need problem statements, a realistic build plan and a demo they can present
@@ -91,9 +91,9 @@ export default function About() {
             <Sparkles className="w-5 h-5 text-primary" /> Who builds it
           </h2>
           <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
-            Engineering Hub is designed, built and maintained by <strong>MrunalTech</strong>, a student team
+            DEVLAUNCH is designed, built and maintained by <strong>MrunalTech</strong>, a student team
             founded by <strong>Mrunalini Pramod Dhoke</strong> (CEO &amp; Co-Founder) and{" "}
-            <strong>Sanchita Bhaskar Chimate</strong> (Co-Founder). The platform started as a DevLaunch /
+            <strong>Sanchita Bhaskar Chimate</strong> (Co-Founder). The platform started as a DEVLAUNCH /
             TechNova'26 project and is still shaped by student feedback — new tools, learning paths and
             problem statements are added continuously. Found a mistake, want a tool added, or want to
             contribute content? The team reads every message.

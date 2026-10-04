@@ -8,6 +8,7 @@ import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import BeginnerModeToggle from "./BeginnerModeToggle";
 import NotificationPanel from "@/components/notifications/NotificationPanel";
 import CircularMenu from "./CircularMenu";
+import GlobalSearchDialog from "@/components/search/GlobalSearchDialog";
 
 const NAV_LINKS = [
   { labelKey: "nav.home", path: "/" },
@@ -31,7 +32,7 @@ export default function SiteHeader({ user, isAdmin }) {
     <header className="sticky top-0 z-40 bg-background/90 backdrop-blur border-b border-border pt-[env(safe-area-inset-top)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         <Link to="/" className="font-heading font-extrabold text-lg tracking-tight text-foreground shrink-0">
-          ENGINEERING HUB
+          DEVLAUNCH
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1">
@@ -51,6 +52,7 @@ export default function SiteHeader({ user, isAdmin }) {
         </nav>
 
         <div className="hidden lg:flex items-center gap-2 shrink-0">
+          <GlobalSearchDialog />
           <LanguageSwitcher />
           <NotificationPanel user={user} />
           <BeginnerModeToggle user={user} />
@@ -82,6 +84,7 @@ export default function SiteHeader({ user, isAdmin }) {
         </div>
 
         <div className="lg:hidden flex items-center gap-2">
+          <GlobalSearchDialog />
           <LanguageSwitcher compact />
           <NotificationPanel user={user} />
           <CircularMenu user={user} isAdmin={isAdmin} />

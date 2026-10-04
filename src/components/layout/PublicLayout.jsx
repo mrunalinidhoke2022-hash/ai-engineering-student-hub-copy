@@ -23,7 +23,7 @@ export default function PublicLayout() {
       <header className="sticky top-0 z-40 bg-background/90 backdrop-blur border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <Link to="/" className="font-heading font-extrabold text-lg tracking-tight text-foreground shrink-0">
-            ENGINEERING HUB
+            DEVLAUNCH
           </Link>
 
           <nav className="hidden sm:flex items-center gap-1">

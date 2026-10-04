@@ -70,7 +70,7 @@ export default function Team() {
 
         <div className="mt-16 border-t border-brand-cyan/15 pt-6 flex items-center justify-between gap-4">
           <span className="font-heading text-xs sm:text-xs font-semibold uppercase tracking-[0.28em] text-brand-cyan/60">
-            DevLaunch / TechNova'26
+            DEVLAUNCH
           </span>
           <span className="font-heading text-xs font-semibold text-white">14</span>
         </div>
