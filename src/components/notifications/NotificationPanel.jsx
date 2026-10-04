@@ -19,6 +19,39 @@ const CATEGORY_CLASSES = {
 // the same announcements twice per page view.
 const CACHE_TTL_MS = 60000;
 let cache = { userId: null, at: 0, items: [], unread: 0 };
+let inFlight = null;
+
+// Both bells (desktop and mobile) mount together, so the fetch itself is shared:
+// whichever one starts it, the other waits on the same requests instead of
+// repeating them on every page.
+async function fetchNotifications(user) {
+  const seenAt = user?.notifications_seen_at;
+  const [announcements, reviews] = await Promise.all([
+    base44.entities.Announcement.filter({}, { sort: "-created_date", limit: 20 }),
+    base44.entities.CodeReview.filter(
+      { has_issues: true },
+      { sort: "-created_date", limit: 10, fields: ["problem_id", "problem_title", "summary", "created_date"] }
+    ),
+  ]);
+  const [announcementUnread, reviewUnread] = await Promise.all([
+    base44.entities.Announcement.count(seenAt ? { created_date: { $gt: seenAt } } : {}),
+    base44.entities.CodeReview.count(seenAt ? { has_issues: true, created_date: { $gt: seenAt } } : { has_issues: true }),
+  ]);
+  // Personal code-review alerts sit alongside the site-wide announcements, and only
+  // ever hold the signed-in student's own reviews.
+  const items = [
+    ...announcements.items.map((a) => ({ id: a.id, badge: a.category, title: a.title, message: a.message, link: a.link, created_date: a.created_date })),
+    ...reviews.items.map((r) => ({
+      id: r.id,
+      badge: "Code Review",
+      title: `Feedback on ${r.problem_title}`,
+      message: r.summary,
+      link: `/coding-practice/${r.problem_id}`,
+      created_date: r.created_date,
+    })),
+  ].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+  return { items, unread: announcementUnread + reviewUnread };
+}
 
 export default function NotificationPanel({ user }) {
   const [items, setItems] = useState([]);
@@ -31,35 +64,26 @@ export default function NotificationPanel({ user }) {
       setUnread(cache.unread);
       return;
     }
-    const seenAt = user?.notifications_seen_at;
-    const [announcements, reviews] = await Promise.all([
-      base44.entities.Announcement.filter({}, { sort: "-created_date", limit: 20 }),
-      base44.entities.CodeReview.filter(
-        { has_issues: true },
-        { sort: "-created_date", limit: 10, fields: ["problem_id", "problem_title", "summary", "created_date"] }
-      ),
-    ]);
-    const [announcementUnread, reviewUnread] = await Promise.all([
-      base44.entities.Announcement.count(seenAt ? { created_date: { $gt: seenAt } } : {}),
-      base44.entities.CodeReview.count(seenAt ? { has_issues: true, created_date: { $gt: seenAt } } : { has_issues: true }),
-    ]);
-    // Personal code-review alerts sit alongside the site-wide announcements, and only
-    // ever hold the signed-in student's own reviews.
-    const merged = [
-      ...announcements.items.map((a) => ({ id: a.id, badge: a.category, title: a.title, message: a.message, link: a.link, created_date: a.created_date })),
-      ...reviews.items.map((r) => ({
-        id: r.id,
-        badge: "Code Review",
-        title: `Feedback on ${r.problem_title}`,
-        message: r.summary,
-        link: `/coding-practice/${r.problem_id}`,
-        created_date: r.created_date,
-      })),
-    ].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
-    const unreadCount = announcementUnread + reviewUnread;
-    cache = { userId: user.id, at: Date.now(), items: merged, unread: unreadCount };
-    setItems(merged);
-    setUnread(unreadCount);
+    if (!inFlight) {
+      inFlight = fetchNotifications(user)
+        .then((data) => {
+          cache = { userId: user.id, at: Date.now(), ...data };
+          return cache;
+        })
+        .finally(() => {
+          inFlight = null;
+        });
+    }
+    const pending = inFlight;
+    let data;
+    try {
+      data = await pending;
+    } catch {
+      // The bell is a side panel: a failed load leaves it empty rather than breaking the page.
+      return;
+    }
+    setItems(data.items);
+    setUnread(data.unread);
   };
 
   useEffect(() => {

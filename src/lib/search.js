@@ -1,6 +1,28 @@
 import { base44 } from "@/api/base44Client";
 import { QUICK_TOPICS } from "@/data/quickTopics";
 
+// A search reads nine collections, so every result set is cached briefly: typing,
+// backspacing or reopening the dialog reuses the same answer instead of making
+// another round of requests (which is what trips the API rate limit).
+const CACHE_TTL_MS = 5 * 60 * 1000;
+const CACHE_LIMIT = 40;
+const resultCache = new Map();
+
+function readCache(key) {
+  const hit = resultCache.get(key);
+  if (!hit) return null;
+  if (Date.now() - hit.at > CACHE_TTL_MS) {
+    resultCache.delete(key);
+    return null;
+  }
+  return hit.value;
+}
+
+function writeCache(key, value) {
+  if (resultCache.size >= CACHE_LIMIT) resultCache.delete(resultCache.keys().next().value);
+  resultCache.set(key, { at: Date.now(), value });
+}
+
 // Every destination in the app, so any search can always offer somewhere to go.
 export const PAGES = [
   { title: "Home", subtitle: "Search, quick topics and the whole platform in one view", to: "/", keywords: "home start overview index" },
@@ -54,8 +76,19 @@ export async function runSearch(rawQuery) {
   const query = (rawQuery || "").trim();
   if (!query) return { groups: [], total: 0 };
 
+  const cacheKey = query.toLowerCase();
+  const cached = readCache(cacheKey);
+  if (cached) return cached;
+
   const regex = { $regex: query, $options: "i" };
-  const grab = (promise) => promise.then((page) => page?.items || []).catch(() => []);
+  let failed = 0;
+  const grab = (promise) =>
+    promise
+      .then((page) => page?.items || [])
+      .catch(() => {
+        failed += 1;
+        return [];
+      });
 
   const [tools, problems, languages, lessons, challenges, prompts, paths, statements, announcements] = await Promise.all([
     grab(base44.entities.Tool.filter({ $or: [{ name: regex }, { description: regex }, { tags: regex }] }, { limit: 6 })),
@@ -150,5 +183,12 @@ export async function runSearch(rawQuery) {
     },
   ].filter((group) => group.items.length > 0);
 
-  return { groups, total: groups.reduce((sum, group) => sum + group.items.length, 0) };
+  const result = {
+    groups,
+    total: groups.reduce((sum, group) => sum + group.items.length, 0),
+    failed,
+  };
+  // Only a complete search is remembered — a partially failed one is retried next time.
+  if (failed === 0) writeCache(cacheKey, result);
+  return result;
 }

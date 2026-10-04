@@ -72,8 +72,12 @@ export default function Search() {
       {searching && !state.loading && state.total === 0 ? (
         <div className="mt-6">
           <EmptyState
-            title={`Nothing matched “${q.trim()}”`}
-            description="Check the spelling, or jump to a section below and browse from there."
+            title={state.failed ? "Search is busy right now" : `Nothing matched “${q.trim()}”`}
+            description={
+              state.failed
+                ? "Too many searches at once — wait a moment and try again."
+                : "Check the spelling, or jump to a section below and browse from there."
+            }
           />
         </div>
       ) : null}

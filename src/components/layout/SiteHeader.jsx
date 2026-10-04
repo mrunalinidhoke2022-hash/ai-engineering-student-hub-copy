@@ -51,8 +51,10 @@ export default function SiteHeader({ user, isAdmin }) {
           ))}
         </nav>
 
-        <div className="hidden lg:flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           <GlobalSearchDialog />
+
+          <div className="hidden lg:flex items-center gap-2">
           <LanguageSwitcher />
           <NotificationPanel user={user} />
           <BeginnerModeToggle user={user} />
@@ -84,10 +86,10 @@ export default function SiteHeader({ user, isAdmin }) {
         </div>
 
         <div className="lg:hidden flex items-center gap-2">
-          <GlobalSearchDialog />
           <LanguageSwitcher compact />
           <NotificationPanel user={user} />
           <CircularMenu user={user} isAdmin={isAdmin} />
+          </div>
         </div>
       </div>
     </header>

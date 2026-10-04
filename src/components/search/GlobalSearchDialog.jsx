@@ -24,9 +24,12 @@ export default function GlobalSearchDialog() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  // Search only while the dialog is open, only from two characters, and only once
+  // typing pauses — one round of lookups per real search.
   useEffect(() => {
+    if (!open) return;
     const trimmed = query.trim();
-    if (!trimmed) {
+    if (trimmed.length < 2) {
       setState({ loading: false, groups: [], total: 0 });
       return;
     }
@@ -36,14 +39,17 @@ export default function GlobalSearchDialog() {
       runSearch(trimmed).then((result) => {
         if (active) setState({ loading: false, ...result });
       });
-    }, 250);
+    }, 500);
     return () => {
       active = false;
       clearTimeout(timer);
     };
-  }, [query]);
+  }, [query, open]);
 
-  const close = () => setOpen(false);
+  const close = () => {
+    setOpen(false);
+    setQuery("");
+  };
 
   const seeAll = () => {
     const trimmed = query.trim();
@@ -64,7 +70,7 @@ export default function GlobalSearchDialog() {
         <Search className="w-4 h-4" />
       </Button>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={(value) => (value ? setOpen(true) : close())}>
         <DialogContent className="max-w-xl p-0 gap-0 overflow-hidden">
           <DialogTitle className="sr-only">Search everything</DialogTitle>
           <form
@@ -87,21 +93,23 @@ export default function GlobalSearchDialog() {
           </form>
 
           <div className="max-h-[60vh] overflow-y-auto scroll-touch p-4">
-            {!query.trim() ? (
+            {query.trim().length < 2 ? (
               <p className="text-sm text-muted-foreground">
-                Type to search the whole platform — AI tools, coding problems, CodeQuest lessons and challenges, prompts,
-                hackathon statements, guides and pages.
+                Type at least two letters to search the whole platform — AI tools, coding problems, CodeQuest lessons and
+                challenges, prompts, hackathon statements, guides and pages.
               </p>
             ) : state.total === 0 && !state.loading ? (
               <p className="text-sm text-muted-foreground">
-                Nothing matched “{query.trim()}”. Try a language, topic or tool name.
+                {state.failed
+                  ? "Search is busy right now — please try again in a moment."
+                  : `Nothing matched “${query.trim()}”. Try a language, topic or tool name.`}
               </p>
             ) : (
               <SearchResultsList groups={state.groups} onNavigate={close} maxPerGroup={4} />
             )}
           </div>
 
-          {query.trim() && state.total > 0 ? (
+          {query.trim().length >= 2 && state.total > 0 ? (
             <button
               type="button"
               onClick={seeAll}
