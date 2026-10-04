@@ -22,6 +22,13 @@ export default async function (req: Request): Promise<Response> {
     const body = await req.json().catch(() => ({}));
     const action = body?.action === 'repos' ? 'repos' : 'commits';
 
+    // The repository list is read with the app owner's own GitHub account, so only an admin
+    // may ask for it. The picker is admin-only in the UI, and the server check must match it
+    // rather than trust it.
+    if (action === 'repos' && user.role !== 'admin') {
+      return Response.json({ error: 'Admins only' }, { status: 403 });
+    }
+
     // GitHub is connected as the app owner's account, so every read here uses that one
     // token and the browser never sees it.
     let accessToken = '';
