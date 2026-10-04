@@ -44,6 +44,7 @@ const Workspace = lazy(() => import('@/pages/Workspace'));
 const About = lazy(() => import('@/pages/About'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const ContentUpdates = lazy(() => import('@/pages/ContentUpdates'));
+const Leaderboard = lazy(() => import('@/pages/Leaderboard'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -90,6 +91,7 @@ const AuthenticatedApp = () => {
           <Route path="/learn" element={<Learn />} />
           <Route path="/coding-practice" element={<CodingPractice />} />
           <Route path="/coding-practice/:id" element={<CodingProblemDetail />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/hackathon-hub" element={<HackathonHub />} />
           <Route path="/project-builder" element={<ProjectBuilder />} />
           <Route path="/prompts" element={<Prompts />} />

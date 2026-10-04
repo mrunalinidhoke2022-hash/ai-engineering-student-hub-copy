@@ -14,6 +14,7 @@ const NAV_LINKS = [
   { labelKey: "nav.aiTools", path: "/ai-tools" },
   { labelKey: "nav.learn", path: "/learn" },
   { labelKey: "nav.coding", path: "/coding-practice" },
+  { labelKey: "nav.leaderboard", path: "/leaderboard" },
   { labelKey: "nav.hackathons", path: "/hackathon-hub" },
   { labelKey: "nav.projectBuilder", path: "/project-builder" },
   { labelKey: "nav.prompts", path: "/prompts" },

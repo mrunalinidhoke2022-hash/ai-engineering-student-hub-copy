@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Trophy } from "lucide-react";
 import FilterChips from "@/components/common/FilterChips";
 import EmptyState from "@/components/common/EmptyState";
+import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import PullToRefresh from "@/components/common/PullToRefresh";
 
@@ -43,8 +45,17 @@ export default function CodingPractice() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
       <PullToRefresh onRefresh={load} />
-      <h1 className="font-heading font-extrabold text-3xl">Coding Practice Center</h1>
-      <p className="text-muted-foreground mt-1">Practice real problems across languages and difficulty levels. Track what you've solved.</p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="font-heading font-extrabold text-3xl">Coding Practice Center</h1>
+          <p className="text-muted-foreground mt-1">Practice real problems across languages and difficulty levels. Track what you've solved.</p>
+        </div>
+        <Link to="/leaderboard" className="shrink-0">
+          <Button variant="outline" size="sm" className="gap-1.5">
+            <Trophy className="w-4 h-4" /> Leaderboard
+          </Button>
+        </Link>
+      </div>
 
       <div className="mt-6 space-y-3">
         <FilterChips options={LANGUAGES} value={language} onChange={setLanguage} allLabel="All Languages" />
