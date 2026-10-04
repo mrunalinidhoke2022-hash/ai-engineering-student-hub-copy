@@ -262,6 +262,22 @@ export const selectDueSources = (sources, settings, now = Date.now()) => {
     .slice(0, MAX_SOURCES_PER_RUN);
 };
 
+// Whether the schedule has anything left to do right now. The daily "Content Sync" workflow runs as
+// the app itself and carries no user session, so a request without a session cannot prove it came
+// from the cron — its URL is public and its body is whatever the caller sent. This is the condition
+// such a request must meet before anything runs: it is served only while a source is genuinely past
+// its own interval, which is exactly when the schedule itself would have run. A caller therefore
+// cannot buy extra runs or spend model credits ahead of the cron, and the daily run still works.
+export const scheduleIsDue = async (base44) => {
+  const settings = await loadSettings(base44);
+  if (!settings.enabled) return false;
+  const page = await base44.asServiceRole.entities.ContentSource.filter({}, { limit: 50 });
+  const pool = (page.items || []).filter(
+    (source) => source.enabled !== false && (settings.categories || []).includes(source.category) && isSafeSourceUrl(source.url)
+  );
+  return selectDueSources(pool, settings).length > 0;
+};
+
 export const fetchSource = async (source) => {
   const url = safeExternalUrl(source.url);
   if (!url) return { status: 'error', error: 'That source URL is not allowed.', items: [] };

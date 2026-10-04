@@ -26,6 +26,13 @@ const executionConfigured = () => {
   }
 };
 
+// These challenge types cannot be checked by the app yet, so they are finished on the student's own
+// word — and a request body can claim anything. A self-verified build therefore earns a small fixed
+// reward instead of the challenge's full prize: progress and the level still complete, but full
+// credit stays tied to work the app can verify. Once CODE_EXEC_API_URL is set and the sandbox grades
+// these types server-side, the cap can be raised to the full reward.
+const SELF_VERIFIED_XP_CAP = 10;
+
 // RLS scopes StudentQuest to its owner, so this always resolves to the caller's own record.
 const getQuest = async (base44: any) => {
   const page = await base44.entities.StudentQuest.filter({}, { limit: 1 });
@@ -97,7 +104,10 @@ const ensureAttempt = async (base44: any, challenge: any) => {
 };
 
 const solve = async (base44: any, challenge: any, attempt: any, extra: any) => {
-  const xp = clamp(num(challenge.xp_reward, 30), 5, 200);
+  // The reward is capped by what the caller's submission actually proved: a graded answer earns the
+  // challenge's full value, a self-verified build only the reduced cap.
+  const cap = clamp(num(extra?.xp_cap, 200), 5, 200);
+  const xp = clamp(num(challenge.xp_reward, 30), 5, cap);
   await base44.entities.ChallengeAttempt.update(attempt.id, {
     status: 'solved',
     attempts: (Number(attempt.attempts) || 0) + 1,
@@ -200,7 +210,7 @@ export default async function (req: Request): Promise<Response> {
           });
         }
         await base44.entities.ChallengeAttempt.update(attempt.id, { answer });
-        return await solve(base44, challenge, attempt, { answer });
+        return await solve(base44, challenge, attempt, { answer, xp_cap: SELF_VERIFIED_XP_CAP });
       }
 
       // The answer and explanation live in an admin-only record, so the client never sees them.

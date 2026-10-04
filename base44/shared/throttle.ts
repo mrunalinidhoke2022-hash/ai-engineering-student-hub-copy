@@ -27,13 +27,14 @@ const hashKey = async (value) => {
     .join('');
 };
 
-// Caller address used as a rate-limit key. Only addresses the platform's own edge sets are
-// trusted (it overwrites anything a caller sends); x-forwarded-for is deliberately never read
-// because a caller can put an arbitrary value in it. When no trusted address is present the
-// caller joins one shared anonymous bucket instead of being able to pick a fresh key per
-// request. Students on one campus network share a public address, so the limit stays generous.
+// Caller address used as a rate-limit key, taken only from the header the platform's own edge sets
+// (it overwrites anything a caller sends). x-forwarded-for and x-real-ip are ordinary request
+// headers a caller can put any value in: reading one would let a brute-force caller hand in a fresh
+// key per request and walk straight past these limits, so neither is ever read. When no trusted
+// address is present the caller joins one shared anonymous bucket instead of picking its own key.
+// Students on one campus network share a public address, so the limit stays generous.
 export const clientIp = (req) => {
-  const platformAddress = req.headers.get('cf-connecting-ip') || req.headers.get('x-real-ip') || '';
+  const platformAddress = req.headers.get('cf-connecting-ip') || '';
   return platformAddress.trim() || 'unknown';
 };
 
