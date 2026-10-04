@@ -26,6 +26,66 @@
       "type": "string",
       "maxLength": 4000
     },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Web",
+        "Mobile",
+        "AI/Data",
+        "Systems",
+        "Backend",
+        "Database",
+        "Scientific",
+        "Game Development",
+        "Scripting",
+        "Low-Level"
+      ]
+    },
+    "icon": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "Beginner-friendly",
+        "Moderate",
+        "Challenging"
+      ],
+      "default": "Beginner-friendly"
+    },
+    "use_cases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "path_summary": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "learn_hours": {
+      "type": "number",
+      "default": 0
+    },
+    "roadmap_preview": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "curriculum_status": {
+      "type": "string",
+      "enum": [
+        "ready",
+        "expanding"
+      ],
+      "default": "expanding"
+    },
+    "popular": {
+      "type": "boolean",
+      "default": false
+    },
     "levels": {
       "type": "array",
       "items": {

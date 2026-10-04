@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronDown, Rocket, Star } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import EmptyState from "@/components/common/EmptyState";
+import QuestHero from "@/components/quest/QuestHero";
 import QuestStatsBar from "@/components/quest/QuestStatsBar";
+import QuestGuide from "@/components/quest/QuestGuide";
+import LanguageCatalog from "@/components/quest/LanguageCatalog";
 import LevelMap from "@/components/quest/LevelMap";
 import { ACHIEVEMENT_ICONS, isBossLevel } from "@/components/quest/questLabels";
-import { GUIDE_STEPS } from "@/components/quest/questMessages";
 
 const CRITERIA_LABELS = {
   xp_total: "XP",
@@ -15,8 +18,19 @@ const CRITERIA_LABELS = {
   streak_days: "day streak",
 };
 
+const readLastSlug = () => {
+  try {
+    return window.localStorage.getItem("codequest:last-language") || "";
+  } catch {
+    return "";
+  }
+};
+
+const scrollToId = (id) => document.getElementById(id)?.scrollIntoView({ block: "start" });
+
 export default function CodeQuest() {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const [languages, setLanguages] = useState([]);
   const [lessonCounts, setLessonCounts] = useState({});
   const [challengeCounts, setChallengeCounts] = useState({});
@@ -28,7 +42,8 @@ export default function CodeQuest() {
   const [activeSlug, setActiveSlug] = useState("");
   const [content, setContent] = useState({ lessons: [], challenges: [] });
   const [showOverview, setShowOverview] = useState(false);
-  const [showGuide, setShowGuide] = useState(false);
+  const [dailyPool, setDailyPool] = useState([]);
+  const [lastSlug, setLastSlug] = useState(readLastSlug);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
 
@@ -38,14 +53,18 @@ export default function CodeQuest() {
     const load = async () => {
       setLoading(true);
       try {
-        const [languagePage, lessonStats, challengeStats, progressPage, attemptPage, stats, badgePage] = await Promise.all([
-          base44.entities.ProgrammingLanguage.filter({ enabled: true }, { sort: "sort_order", limit: 50 }),
+        const [languagePage, lessonStats, challengeStats, progressPage, attemptPage, stats, badgePage, dailyPage] = await Promise.all([
+          base44.entities.ProgrammingLanguage.filter({ enabled: true }, { sort: "sort_order", limit: 60 }),
           base44.entities.Lesson.aggregate({ query: { published: true }, groupBy: "language_slug" }),
           base44.entities.CodingChallenge.aggregate({ query: { published: true }, groupBy: "language_slug" }),
           base44.entities.LessonProgress.list({ limit: 300, fields: ["lesson_id", "language_slug", "level_order"] }),
           base44.entities.ChallengeAttempt.filter({ status: "solved" }, { limit: 300, fields: ["challenge_id", "language_slug", "level_order"] }),
           base44.functions.invoke("questPlay", { action: "stats" }),
           base44.entities.Achievement.filter({ enabled: true }, { sort: "criteria_value", limit: 50 }),
+          base44.entities.CodingChallenge.filter(
+            { published: true },
+            { limit: 60, sort: "created_date", fields: ["id", "title", "language_slug", "type", "difficulty", "xp_reward", "level_order"] }
+          ),
         ]);
         if (cancelled) return;
 
@@ -55,9 +74,9 @@ export default function CodeQuest() {
         setCompletedLessons(progressPage.items || []);
         setSolvedAttempts(attemptPage.items || []);
         setQuest(stats.data?.quest || null);
-        setShowGuide(!(Number(stats.data?.quest?.xp) > 0));
         setLevel(stats.data?.level || null);
         setAchievements(badgePage.items || []);
+        setDailyPool(dailyPage.items || []);
       } catch (error) {
         if (!cancelled) setFailed(true);
       } finally {
@@ -89,6 +108,8 @@ export default function CodeQuest() {
   }, [activeSlug]);
 
   const activeLanguage = languages.find((language) => language.slug === activeSlug) || null;
+  const earnedKeys = new Set(quest?.achievements || []);
+  const started = Number(quest?.xp) > 0;
 
   // Progress per level for the open language, from the student's own records.
   const progressByLevel = useMemo(() => {
@@ -118,8 +139,69 @@ export default function CodeQuest() {
     return map;
   }, [activeSlug, activeLanguage, content, completedLessons, solvedAttempts]);
 
-  const earnedKeys = new Set(quest?.achievements || []);
-  const firstLanguage = languages[0] || null;
+  // Per-language totals and the student's own progress, for the catalogue cards.
+  const languageProgress = useMemo(() => {
+    const map = {};
+    languages.forEach((language) => {
+      map[language.slug] = {
+        lessons: lessonCounts[language.slug] || 0,
+        challenges: challengeCounts[language.slug] || 0,
+        done: completedLessons.filter((row) => row.language_slug === language.slug).length,
+        solved: solvedAttempts.filter((row) => row.language_slug === language.slug).length,
+      };
+    });
+    return map;
+  }, [languages, lessonCounts, challengeCounts, completedLessons, solvedAttempts]);
+
+  const readyLanguages = useMemo(
+    () => languages.filter((language) => language.curriculum_status === "ready" && (language.levels?.length || 0) > 0),
+    [languages]
+  );
+
+  // The track to continue: the last one opened, else the one with the most progress.
+  const recommended = useMemo(() => {
+    const marks = (slug) => (languageProgress[slug]?.done || 0) + (languageProgress[slug]?.solved || 0);
+    return (
+      readyLanguages.find((language) => language.slug === lastSlug) ||
+      [...readyLanguages].sort((a, b) => marks(b.slug) - marks(a.slug))[0] ||
+      null
+    );
+  }, [readyLanguages, lastSlug, languageProgress]);
+
+  // Today's challenge: the same pick for everyone all day, and a different one tomorrow.
+  const dailyChallenge = useMemo(() => {
+    if (!dailyPool.length) return null;
+    const day = new Date().toISOString().slice(0, 10);
+    const seed = [...day].reduce((sum, character) => sum + character.charCodeAt(0), 0);
+    return dailyPool[seed % dailyPool.length];
+  }, [dailyPool]);
+
+  const openTrack = (slug) => {
+    setActiveSlug(slug);
+    setShowOverview(false);
+    setLastSlug(slug);
+    try {
+      window.localStorage.setItem("codequest:last-language", slug);
+    } catch {
+      // Storage can be blocked; the session still works, it just forgets the track.
+    }
+  };
+
+  const startCoding = () => {
+    if (!recommended) return;
+    const marks = [...completedLessons, ...solvedAttempts]
+      .filter((row) => row.language_slug === recommended.slug)
+      .map((row) => Number(row.level_order) || 1);
+    const lastLevel = recommended.levels?.length || 1;
+    const nextOrder = marks.length ? Math.min(lastLevel, Math.max(...marks) + 1) : 1;
+    navigate(`/codequest/${recommended.slug}/${nextOrder}`);
+  };
+
+  const openRoadmap = () => {
+    if (!recommended) return;
+    openTrack(recommended.slug);
+    window.requestAnimationFrame(() => scrollToId("quest-roadmap"));
+  };
 
   if (loading) {
     return (
@@ -139,108 +221,65 @@ export default function CodeQuest() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
-      <h1 className="font-heading font-extrabold text-3xl">CodeQuest</h1>
-      <p className="text-muted-foreground mt-1">{t("codequest.subtitle")}</p>
+      <QuestHero
+        quest={quest}
+        level={level}
+        trackName={recommended?.name}
+        badges={earnedKeys.size}
+        languagesCount={languages.length}
+        daily={dailyChallenge}
+        onStart={startCoding}
+        onRoadmap={openRoadmap}
+        onDaily={() => dailyChallenge && navigate(`/codequest/challenge/${dailyChallenge.id}`)}
+        onAchievements={() => scrollToId("quest-achievements")}
+      />
 
-      <div className="mt-6">
+      <div className="mt-4">
         <QuestStatsBar quest={quest} level={level} />
       </div>
 
-      {quest && quest.xp === 0 && !activeSlug && firstLanguage && (
+      {!started && !activeSlug && recommended && (
         <div className="mt-4 flex items-start gap-3 bg-accent/60 border border-border rounded-lg p-4">
           <Rocket className="w-5 h-5 text-primary shrink-0 mt-0.5" />
           <div>
             <p className="font-semibold text-sm">{t("codequest.quickStart")}</p>
             <p className="text-sm text-muted-foreground mt-0.5">
               {t("codequest.quickStartBody", {
-                language: firstLanguage.name,
-                level: firstLanguage.levels?.[0]?.title || t("codequest.level") + " 1",
+                language: recommended.name,
+                level: recommended.levels?.[0]?.title || t("codequest.level") + " 1",
               })}
             </p>
             <button
               type="button"
-              onClick={() => setActiveSlug(firstLanguage.slug)}
+              onClick={() => openTrack(recommended.slug)}
               className="text-sm font-semibold text-primary mt-2"
             >
-              {t("codequest.openTrack", { language: firstLanguage.name })} →
+              {t("codequest.openTrack", { language: recommended.name })} →
             </button>
           </div>
         </div>
       )}
 
-      <div className="mt-6 bg-card border border-border rounded-lg">
-        <button
-          type="button"
-          onClick={() => setShowGuide((value) => !value)}
-          className="w-full flex items-center justify-between gap-3 p-4 text-left"
-        >
-          <span className="font-semibold text-sm">{t("codequest.howItWorks")}</span>
-          <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${showGuide ? "rotate-180" : ""}`} />
-        </button>
-        {showGuide && (
-          <div className="px-4 pb-4 pt-4 border-t border-border grid sm:grid-cols-2 gap-4">
-            {GUIDE_STEPS.map((step) => (
-              <div key={step.title}>
-                <p className="font-semibold text-sm">{step.title}</p>
-                <p className="text-sm text-muted-foreground mt-0.5">{step.body}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <QuestGuide defaultOpen={!started} />
 
       {languages.length === 0 ? (
         <div className="mt-8">
           <EmptyState title={t("codequest.noLanguagesTitle")} description={t("codequest.noLanguagesBody")} />
         </div>
       ) : (
-        <div className="mt-8">
+        <div className="mt-8" id="quest-languages">
           <h2 className="font-heading font-bold text-lg">{t("codequest.chooseLanguage")}</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-            {languages.map((language) => {
-              const total = lessonCounts[language.slug] || 0;
-              const done = completedLessons.filter((row) => row.language_slug === language.slug).length;
-              const solved = solvedAttempts.filter((row) => row.language_slug === language.slug).length;
-              const challengeTotal = challengeCounts[language.slug] || 0;
-              const pct = total ? Math.round((done / total) * 100) : 0;
-              const active = language.slug === activeSlug;
-
-              return (
-                <button
-                  key={language.id}
-                  type="button"
-                  onClick={() => {
-                    setActiveSlug(language.slug);
-                    setShowOverview(false);
-                  }}
-                  className={`text-left bg-card border rounded-lg p-5 transition-colors ${
-                    active ? "border-primary" : "border-border hover:border-primary/40"
-                  }`}
-                >
-                  <p className="font-heading font-bold text-lg">{language.name}</p>
-                  {language.tagline && <p className="text-sm text-muted-foreground mt-0.5">{language.tagline}</p>}
-                  <p className="text-xs text-muted-foreground mt-3">
-                    {t("codequest.languageProgress", {
-                      levels: language.levels?.length || 0,
-                      lessons: total,
-                      challenges: challengeTotal,
-                    })}
-                  </p>
-                  <div className="h-1.5 rounded-full bg-secondary mt-2 overflow-hidden">
-                    <div className="h-full bg-primary" style={{ width: `${pct}%` }} />
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1.5">
-                    {t("codequest.languageDone", { done, solved })}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
+          <LanguageCatalog
+            languages={languages}
+            progress={languageProgress}
+            activeSlug={activeSlug}
+            onOpen={openTrack}
+          />
         </div>
       )}
 
       {activeLanguage && (
-        <div className="mt-10">
+        <div className="mt-10" id="quest-roadmap">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <h2 className="font-heading font-bold text-xl">{activeLanguage.name} {t("codequest.roadmap")}</h2>
             <button
@@ -303,7 +342,7 @@ export default function CodeQuest() {
       )}
 
       {achievements.length > 0 && (
-        <div className="mt-10">
+        <div className="mt-10" id="quest-achievements">
           <h2 className="font-heading font-bold text-lg">{t("codequest.achievements")}</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
             {achievements.map((badge) => {
