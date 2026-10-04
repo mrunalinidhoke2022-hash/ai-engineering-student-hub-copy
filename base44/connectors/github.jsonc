@@ -2,6 +2,6 @@
   "type": "github",
   "scopes": [
     "read:user",
-    "read:org"
+    "repo"
   ]
 }
