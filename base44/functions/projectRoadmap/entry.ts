@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { throttle } from '../../shared/throttle.ts';
+import { waitUntil } from 'base44:runtime';
 
 export default async function (req: Request): Promise<Response> {
   try {
@@ -51,6 +52,12 @@ Create a clear, practical project roadmap for a beginner engineering student. Be
       prompt,
       response_json_schema: schema
     });
+
+    // KPI: count each roadmap that was actually generated. The analytics client
+    // queues the event, so keep the worker alive briefly to let it flush after
+    // the response is sent.
+    base44.analytics.track({ eventName: 'roadmap_generated' });
+    waitUntil(new Promise((resolve) => setTimeout(resolve, 1500)));
 
     return Response.json({ idea, ...result });
   } catch (error) {

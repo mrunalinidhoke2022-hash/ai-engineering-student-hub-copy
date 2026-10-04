@@ -22,6 +22,8 @@ export default function CodingProblemDetail() {
   }, [id]);
 
   const markSolved = async () => {
+    // KPI: count each problem a student actually works through on the practice feature.
+    base44.analytics.track({ eventName: "coding_problem_attempted", properties: { problem_id: id } });
     if (progress) {
       await base44.entities.Progress.update(progress.id, { status: "completed" });
       setProgress({ ...progress, status: "completed" });
