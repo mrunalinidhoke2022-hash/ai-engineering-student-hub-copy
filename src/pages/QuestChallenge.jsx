@@ -146,7 +146,7 @@ export default function QuestChallenge() {
 
   if (loading) {
     return (
-      <div className="quest-app min-h-screen bg-background max-w-3xl mx-auto px-4 sm:px-6 py-10">
+      <div className="min-h-screen bg-background max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <p className="text-sm text-muted-foreground">{t("codequest.loading")}</p>
       </div>
     );
@@ -154,7 +154,7 @@ export default function QuestChallenge() {
 
   if (!challenge) {
     return (
-      <div className="quest-app min-h-screen bg-background max-w-3xl mx-auto px-4 sm:px-6 py-10">
+      <div className="min-h-screen bg-background max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <EmptyState title={t("codequest.challengeMissingTitle")} description={t("codequest.challengeMissingBody")} />
       </div>
     );

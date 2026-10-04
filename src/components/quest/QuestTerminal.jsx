@@ -16,7 +16,7 @@ export default function QuestTerminal({ title, prompt = "$", output, children, c
         {title && <p className="font-mono text-[11px] text-muted-foreground ml-1 truncate">{title}</p>}
       </div>
 
-      <div className={`flex gap-2 p-3 bg-black/30 ${prompt ? "" : "block"}`}>
+      <div className={`flex gap-2 p-3 bg-secondary/60 ${prompt ? "" : "block"}`}>
         {prompt && (
           <span className="font-mono text-xs text-success select-none" aria-hidden="true">
             {prompt}
@@ -26,7 +26,7 @@ export default function QuestTerminal({ title, prompt = "$", output, children, c
       </div>
 
       {output != null && output !== "" && (
-        <div className="border-t-2 border-border bg-black/30 px-3 py-2">
+        <div className="border-t-2 border-border bg-secondary/60 px-3 py-2">
           <p className="font-mono text-xs whitespace-pre-wrap">{output}</p>
         </div>
       )}

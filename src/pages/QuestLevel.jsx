@@ -134,7 +134,7 @@ export default function QuestLevel() {
 
   if (loading) {
     return (
-      <div className="quest-app min-h-screen bg-background max-w-3xl mx-auto px-4 sm:px-6 py-10">
+      <div className="min-h-screen bg-background max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <p className="text-sm text-muted-foreground">{t("codequest.loading")}</p>
       </div>
     );
@@ -144,7 +144,7 @@ export default function QuestLevel() {
   const level = levels.find((entry) => entry.order === levelOrder) || null;
   if (!language || !level) {
     return (
-      <div className="quest-app min-h-screen bg-background max-w-3xl mx-auto px-4 sm:px-6 py-10">
+      <div className="min-h-screen bg-background max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <EmptyState title={t("codequest.levelMissingTitle")} description={t("codequest.levelMissingBody")} />
       </div>
     );

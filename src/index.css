@@ -106,38 +106,6 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
-  /* CodeQuest runs as its own dark "learn to code" app surface (Mimo-style):
-     deep navy background, purple pill actions, teal success, warm accents.
-     Scoped so only the CodeQuest screens change. */
-  .quest-app {
-    --background: 233 18% 14%;
-    --foreground: 0 0% 100%;
-    --card: 233 17% 19%;
-    --card-foreground: 0 0% 100%;
-    --popover: 233 17% 19%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 263 100% 63%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 233 15% 26%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 233 15% 26%;
-    --muted-foreground: 232 12% 70%;
-    --accent: 263 45% 28%;
-    --accent-foreground: 263 100% 88%;
-    --destructive: 0 72% 58%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 233 15% 26%;
-    --input: 233 15% 26%;
-    --ring: 263 100% 63%;
-    --success: 160 68% 52%;
-    --warning: 38 95% 60%;
-    --xp: 271 100% 62%;
-    --coin: 45 96% 58%;
-    --gem: 275 92% 72%;
-    --streak: 22 95% 58%;
-    --brand-ink: 0 0% 100%;
-    --brand-ink-soft: 232 12% 78%;
-  }
 }
 
 

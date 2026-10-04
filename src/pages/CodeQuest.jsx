@@ -206,7 +206,7 @@ export default function CodeQuest() {
 
   if (loading) {
     return (
-      <div className="quest-app min-h-screen bg-background max-w-5xl mx-auto px-4 sm:px-6 py-10">
+      <div className="min-h-screen bg-background max-w-5xl mx-auto px-4 sm:px-6 py-10">
         <p className="text-sm text-muted-foreground">{t("codequest.loading")}</p>
       </div>
     );
@@ -214,7 +214,7 @@ export default function CodeQuest() {
 
   if (failed) {
     return (
-      <div className="quest-app min-h-screen bg-background max-w-5xl mx-auto px-4 sm:px-6 py-10">
+      <div className="min-h-screen bg-background max-w-5xl mx-auto px-4 sm:px-6 py-10">
         <EmptyState title={t("codequest.errorTitle")} description={t("codequest.errorBody")} />
       </div>
     );
