@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import EmptyState from "@/components/common/EmptyState";
 import { AUTO_GRADED_TYPES, CHALLENGE_TYPE_LABELS, DIFFICULTY_CLASSES } from "@/components/quest/questLabels";
 import { BOSS_MESSAGES, WIN_MESSAGES, WRONG_MESSAGES, pickMessage } from "@/components/quest/questMessages";
+import { celebrate } from "@/lib/gameFx";
 
 const WORKSPACE_NOTICE =
   "This platform never runs student code on its own servers. Automated checking uses an external secure sandbox, so until that service is connected, build and test your solution yourself and compare the output with the expected output.";
@@ -111,6 +112,7 @@ export default function QuestChallenge() {
       if (result.correct) {
         setAttempt({ ...(attempt || {}), status: "solved", hints_used: hintsUsed });
         setFeedback({ kind: "success", reward: result });
+        celebrate();
         const gained = [`+${result.xp_awarded} XP`];
         if (result.xp_bonus) gained.push(`+${result.xp_bonus} bonus XP`);
         toast({ description: `${t("codequest.missionComplete")} ${gained.join(" · ")}` });
@@ -165,27 +167,38 @@ export default function QuestChallenge() {
         ← {t("codequest.backToLevel")}
       </Link>
 
-      <div className="mt-4 flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="font-heading font-extrabold text-2xl">{challenge.title}</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {CHALLENGE_TYPE_LABELS[challenge.type] || challenge.type}
-            {challenge.topic ? ` · ${challenge.topic}` : ""} · +{challenge.xp_reward ?? 30} XP
-          </p>
+      <div className="mt-4 rounded-3xl border-2 border-border bg-gradient-to-br from-primary/10 via-card to-gem/10 p-5">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div className="min-w-0">
+            <h1 className="font-game font-extrabold text-2xl sm:text-3xl">{challenge.title}</h1>
+            <div className="flex flex-wrap items-center gap-2 mt-2">
+              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">
+                {CHALLENGE_TYPE_LABELS[challenge.type] || challenge.type}
+              </span>
+              {challenge.topic && (
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">{challenge.topic}</span>
+              )}
+              <span className="text-xs font-game font-extrabold px-2.5 py-1 rounded-full bg-coin/15 text-coin">
+                +{challenge.xp_reward ?? 30} XP
+              </span>
+            </div>
+          </div>
+          <span className={`text-xs font-bold px-3 py-1 rounded-full shrink-0 ${DIFFICULTY_CLASSES[challenge.difficulty] || "bg-secondary text-secondary-foreground"}`}>
+            {challenge.difficulty}
+          </span>
         </div>
-        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${DIFFICULTY_CLASSES[challenge.difficulty] || "bg-secondary text-secondary-foreground"}`}>
-          {challenge.difficulty}
-        </span>
       </div>
 
       {solved && (
-        <div className="mt-4 flex items-center gap-2 border border-success/40 bg-success/10 rounded-lg p-3">
-          <CheckCircle2 className="w-4 h-4 text-success" />
-          <p className="text-sm font-semibold text-success">{t("codequest.alreadySolved", { xp: attempt?.xp_awarded || 0 })}</p>
+        <div className="mt-4 flex items-center gap-3 rounded-2xl border-2 border-success/50 bg-gradient-to-r from-success/15 to-xp/10 p-3">
+          <span className="w-9 h-9 rounded-full bg-gradient-to-br from-success to-xp text-white flex items-center justify-center shrink-0">
+            <CheckCircle2 className="w-5 h-5" />
+          </span>
+          <p className="font-game font-extrabold text-sm text-success">{t("codequest.alreadySolved", { xp: attempt?.xp_awarded || 0 })}</p>
         </div>
       )}
 
-      <div className="bg-card border border-border rounded-lg p-6 mt-6 space-y-4">
+      <div className="bg-card border-2 border-border rounded-3xl p-5 sm:p-6 mt-6 space-y-4">
         <Field label={t("codequest.problem")}>{challenge.problem}</Field>
         {challenge.example && <Field label={t("codequest.example")}>{challenge.example}</Field>}
 
@@ -223,22 +236,31 @@ export default function QuestChallenge() {
         )}
       </div>
 
-      <div className="bg-card border border-border rounded-lg p-6 mt-6">
-        <h2 className="font-heading font-bold text-lg">{autoGraded ? t("codequest.yourAnswer") : t("codequest.workspace")}</h2>
+      <div className="bg-card border-2 border-border rounded-3xl p-5 sm:p-6 mt-6">
+        <h2 className="font-game font-extrabold text-xl">{autoGraded ? t("codequest.yourAnswer") : t("codequest.workspace")}</h2>
 
         {autoGraded && challenge.type === "multiple_choice" && (challenge.options || []).length > 0 ? (
           <div className="mt-3 space-y-2">
-            {(challenge.options || []).map((option) => (
+            {(challenge.options || []).map((option, index) => (
               <button
                 key={option}
                 type="button"
                 onClick={() => setAnswer(option)}
                 disabled={solved}
-                className={`w-full text-left text-sm border rounded-md p-3 transition-colors ${
-                  answer === option ? "border-primary bg-accent/60" : "border-border hover:border-primary/40"
+                className={`w-full flex items-center gap-3 text-left text-sm border-2 rounded-2xl p-3 transition-all active:scale-[.99] ${
+                  answer === option
+                    ? "border-primary bg-gradient-to-r from-primary/15 to-xp/10 shadow-game"
+                    : "border-border hover:border-primary/50"
                 }`}
               >
-                {option}
+                <span
+                  className={`w-8 h-8 rounded-xl font-game font-extrabold flex items-center justify-center shrink-0 ${
+                    answer === option ? "bg-gradient-to-br from-primary to-xp text-primary-foreground" : "bg-secondary text-muted-foreground"
+                  }`}
+                >
+                  {String.fromCharCode(65 + index)}
+                </span>
+                <span className="min-w-0">{option}</span>
               </button>
             ))}
           </div>
@@ -288,12 +310,16 @@ export default function QuestChallenge() {
         )}
 
         <div className="flex flex-wrap items-center gap-2 mt-4">
-          <Button onClick={() => submit(false)} disabled={solved || busy === "submit"} className="gap-1.5">
+          <Button
+            onClick={() => submit(false)}
+            disabled={solved || busy === "submit"}
+            className="gap-1.5 h-11 rounded-full font-game font-bold bg-gradient-to-r from-primary to-xp text-primary-foreground shadow-game active:scale-[.97] transition-transform"
+          >
             {busy === "submit" ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
             {autoGraded ? t("codequest.submitAnswer") : t("codequest.checkWork")}
           </Button>
           {feedback?.kind === "info" && !solved && (
-            <Button variant="outline" onClick={() => submit(true)} disabled={busy === "submit"}>
+            <Button variant="outline" onClick={() => submit(true)} disabled={busy === "submit"} className="h-11 rounded-full font-game font-bold border-2">
               {t("codequest.markBuilt")}
             </Button>
           )}
@@ -301,10 +327,10 @@ export default function QuestChallenge() {
       </div>
 
       {hints.length > 0 && (
-        <div className="bg-card border border-border rounded-lg p-6 mt-6">
+        <div className="rounded-3xl border-2 border-warning/50 bg-warning/5 p-5 sm:p-6 mt-6">
           <div className="flex items-center justify-between gap-3 flex-wrap">
-            <h2 className="font-heading font-bold text-lg flex items-center gap-2">
-              <Lightbulb className="w-4 h-4 text-warning" /> {t("codequest.hints")}
+            <h2 className="font-game font-extrabold text-xl flex items-center gap-2">
+              <Lightbulb className="w-5 h-5 text-warning" /> {t("codequest.hints")}
             </h2>
             {hintsUsed < hints.length && (
               <Button variant="outline" size="sm" onClick={revealHint} disabled={busy === "hint"}>
@@ -330,9 +356,9 @@ export default function QuestChallenge() {
       {feedback && (
         <div className="mt-6">
           {feedback.kind === "success" && (
-            <div className="border border-success/40 bg-success/10 rounded-lg p-4">
-              <p className="font-semibold text-success flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4" /> {t("codequest.missionComplete")} +{feedback.reward?.xp_awarded} XP
+            <div className="rounded-2xl border-2 border-success/50 bg-gradient-to-br from-success/15 via-card to-xp/10 p-5 shadow-game animate-game-pop motion-reduce:animate-none">
+              <p className="font-game font-extrabold text-xl text-success flex items-center gap-2">
+                🎉 {t("codequest.missionComplete")} +{feedback.reward?.xp_awarded} XP
               </p>
               <p className="text-sm text-success mt-1">
                 {pickMessage(
@@ -360,9 +386,9 @@ export default function QuestChallenge() {
           )}
 
           {feedback.kind === "wrong" && (
-            <div className="border border-warning/40 bg-warning/10 rounded-lg p-4">
-              <p className="font-semibold text-warning flex items-center gap-2">
-                <XCircle className="w-4 h-4" /> {feedback.message}
+            <div className="rounded-2xl border-2 border-warning/50 bg-warning/10 p-5">
+              <p className="font-game font-extrabold text-lg text-warning flex items-center gap-2">
+                <XCircle className="w-5 h-5" /> {feedback.message}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
                 {t("codequest.attemptsSoFar", { count: feedback.attempts || 0 })}
@@ -378,7 +404,7 @@ export default function QuestChallenge() {
           )}
 
           {feedback.kind === "info" && (
-            <div className="border border-border bg-secondary rounded-lg p-4">
+            <div className="rounded-2xl border-2 border-border bg-secondary p-4">
               <p className="text-sm">{feedback.message}</p>
               {executionAvailable && (
                 <p className="text-xs text-muted-foreground mt-1">{t("codequest.runnerPending")}</p>

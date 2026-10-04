@@ -29,7 +29,7 @@ export default function LessonCard({ lesson, completed, onComplete }) {
   };
 
   return (
-    <div className={`bg-card border rounded-lg ${completed ? "border-success/40" : "border-border"}`}>
+    <div className={`bg-card border-2 rounded-2xl overflow-hidden ${completed ? "border-success/50 bg-success/5" : "border-border"}`}>
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
@@ -37,9 +37,9 @@ export default function LessonCard({ lesson, completed, onComplete }) {
       >
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <p className="font-semibold">{lesson.title}</p>
+            <p className="font-game font-extrabold text-lg">{lesson.title}</p>
             {completed && (
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-success">
+              <span className="inline-flex items-center gap-1 rounded-full bg-success/15 px-2 py-0.5 text-xs font-bold text-success">
                 <CheckCircle2 className="w-3.5 h-3.5" /> {t("codequest.learned")}
               </span>
             )}
@@ -47,7 +47,7 @@ export default function LessonCard({ lesson, completed, onComplete }) {
           {lesson.summary && <p className="text-sm text-muted-foreground mt-0.5">{lesson.summary}</p>}
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <span className="text-xs font-semibold text-primary">+{lesson.xp_reward ?? 20} XP</span>
+          <span className="text-xs font-game font-extrabold rounded-full bg-coin/15 text-coin px-2 py-0.5">+{lesson.xp_reward ?? 20} XP</span>
           <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
         </div>
       </button>
@@ -66,7 +66,7 @@ export default function LessonCard({ lesson, completed, onComplete }) {
           {lesson.code_example && (
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Code example</p>
-              <pre className="font-mono text-xs bg-secondary rounded-md p-3 overflow-x-auto mt-1 whitespace-pre-wrap">{lesson.code_example}</pre>
+              <pre className="font-mono text-xs bg-secondary border-2 border-border rounded-xl p-3 overflow-x-auto mt-1 whitespace-pre-wrap">{lesson.code_example}</pre>
             </div>
           )}
 
@@ -88,7 +88,11 @@ export default function LessonCard({ lesson, completed, onComplete }) {
             </div>
           )}
 
-          <Button onClick={complete} disabled={completed || saving} className="gap-1.5">
+          <Button
+            onClick={complete}
+            disabled={completed || saving}
+            className="gap-1.5 h-11 rounded-full font-game font-bold bg-gradient-to-r from-primary to-xp text-primary-foreground shadow-game active:scale-[.97] transition-transform"
+          >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
             {completed ? t("codequest.learned") : t("codequest.markLearned")}
           </Button>

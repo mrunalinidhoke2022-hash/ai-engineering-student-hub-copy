@@ -268,7 +268,7 @@ export default function CodeQuest() {
         </div>
       ) : (
         <div className="mt-8" id="quest-languages">
-          <h2 className="font-heading font-bold text-lg">{t("codequest.chooseLanguage")}</h2>
+          <h2 className="font-game font-extrabold text-xl">{t("codequest.chooseLanguage")}</h2>
           <LanguageCatalog
             languages={languages}
             progress={languageProgress}
@@ -281,7 +281,7 @@ export default function CodeQuest() {
       {activeLanguage && (
         <div className="mt-10" id="quest-roadmap">
           <div className="flex items-center justify-between gap-3 flex-wrap">
-            <h2 className="font-heading font-bold text-xl">{activeLanguage.name} {t("codequest.roadmap")}</h2>
+            <h2 className="font-game font-extrabold text-2xl">{activeLanguage.name} {t("codequest.roadmap")}</h2>
             <button
               type="button"
               onClick={() => setActiveSlug("")}
@@ -343,7 +343,7 @@ export default function CodeQuest() {
 
       {achievements.length > 0 && (
         <div className="mt-10" id="quest-achievements">
-          <h2 className="font-heading font-bold text-lg">{t("codequest.achievements")}</h2>
+          <h2 className="font-game font-extrabold text-xl">{t("codequest.achievements")}</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
             {achievements.map((badge) => {
               const earned = earnedKeys.has(badge.key);
@@ -351,19 +351,21 @@ export default function CodeQuest() {
               return (
                 <div
                   key={badge.id}
-                  className={`flex items-start gap-3 border rounded-lg p-4 ${
-                    earned ? "border-primary/40 bg-accent/40" : "border-border bg-card opacity-70"
+                  className={`flex items-start gap-3 rounded-2xl border-2 p-4 transition-all ${
+                    earned
+                      ? "border-coin/50 bg-gradient-to-br from-coin/15 via-card to-gem/10 shadow-game-coin"
+                      : "border-dashed border-border bg-card/60"
                   }`}
                 >
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${earned ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>
+                  <span className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${earned ? "bg-gradient-to-br from-coin to-streak text-white" : "bg-secondary text-muted-foreground"}`}>
                     <Icon className="w-5 h-5" />
-                  </div>
+                  </span>
                   <div className="min-w-0">
-                    <p className="font-semibold text-sm">{badge.name}</p>
+                    <p className={`font-game font-extrabold text-base ${earned ? "" : "text-muted-foreground"}`}>{badge.name}</p>
                     {badge.description && <p className="text-xs text-muted-foreground mt-0.5">{badge.description}</p>}
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className={`text-xs font-bold mt-1 ${earned ? "text-coin" : "text-muted-foreground"}`}>
                       {earned
-                        ? t("codequest.unlocked")
+                        ? `★ ${t("codequest.unlocked")}`
                         : `${badge.criteria_value} ${CRITERIA_LABELS[badge.criteria_type] || badge.criteria_type}`}
                     </p>
                   </div>

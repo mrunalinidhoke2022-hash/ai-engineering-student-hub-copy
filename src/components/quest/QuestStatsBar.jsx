@@ -1,43 +1,40 @@
 import React from "react";
 import { Coins, Flame, Star, Trophy } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
+import StatTile from "@/components/quest/StatTile";
+import XpBar from "@/components/quest/XpBar";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-
-function Stat({ icon: Icon, value, label }) {
-  return (
-    <div className="text-center">
-      <Icon className="w-4 h-4 text-primary mx-auto" />
-      <p className="font-heading font-extrabold text-lg leading-tight">{value ?? 0}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
-    </div>
-  );
-}
 
 export default function QuestStatsBar({ quest, level }) {
   const { t } = useLanguage();
   if (!quest || !level) return null;
 
   return (
-    <div className="bg-card border border-border rounded-lg p-5">
-      <div className="flex items-center justify-between gap-5 flex-wrap">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("codequest.level")}</p>
-          <p className="font-heading font-extrabold text-3xl">{level.level}</p>
+    <div className="rounded-2xl border-2 border-border bg-card p-4">
+      <div className="flex items-center gap-4 flex-wrap">
+        <div className="flex items-center gap-3 shrink-0">
+          <span className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gem to-primary text-white font-game font-extrabold text-xl flex items-center justify-center shadow-game">
+            {level.level}
+          </span>
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">{t("codequest.level")}</p>
+            <p className="font-game font-extrabold text-lg leading-tight">★ {quest.streak_days ?? 0}</p>
+          </div>
         </div>
-        <div className="grid grid-cols-4 gap-5">
-          <Stat icon={Star} value={quest.xp} label={t("codequest.xp")} />
-          <Stat icon={Coins} value={quest.coins} label={t("codequest.coins")} />
-          <Stat icon={Flame} value={quest.streak_days} label={t("codequest.streak")} />
-          <Stat icon={Trophy} value={quest.challenges_solved} label={t("codequest.solved")} />
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 flex-1 min-w-[240px]">
+          <StatTile icon={Star} tone="xp" value={quest.xp} label={t("codequest.xp")} />
+          <StatTile icon={Coins} tone="coin" value={quest.coins} label={t("codequest.coins")} />
+          <StatTile icon={Flame} tone="streak" value={quest.streak_days} label={t("codequest.streak")} />
+          <StatTile icon={Trophy} tone="success" value={quest.challenges_solved} label={t("codequest.solved")} />
         </div>
       </div>
 
-      <div className="mt-4">
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
+      <div className="mt-3">
+        <div className="flex items-center justify-between text-xs font-bold text-muted-foreground">
           <span>{level.xpIntoLevel} / {level.xpForNextLevel} XP</span>
           <span>{t("codequest.nextLevel")}</span>
         </div>
-        <Progress value={level.progressPct} className="h-2 mt-1.5" />
+        <XpBar value={level.progressPct} size="sm" className="mt-1.5" />
       </div>
     </div>
   );

@@ -9,6 +9,8 @@ import LessonCard from "@/components/quest/LessonCard";
 import ChallengeCard from "@/components/quest/ChallengeCard";
 import { isBossLevel } from "@/components/quest/questLabels";
 import { LEVEL_CLEARED_MESSAGES, WIN_MESSAGES, pickMessage } from "@/components/quest/questMessages";
+import XpBar from "@/components/quest/XpBar";
+import { celebrate, celebrateLevelUp } from "@/lib/gameFx";
 
 export default function QuestLevel() {
   const { slug, order } = useParams();
@@ -66,8 +68,10 @@ export default function QuestLevel() {
     const gained = [`+${reward.xp_awarded} XP`];
     if (reward.xp_bonus) gained.push(`+${reward.xp_bonus} bonus XP`);
     toast({ description: `${pickMessage(WIN_MESSAGES, reward.xp_awarded)} ${gained.join(" · ")}` });
+    celebrate();
     if (currentLevel && reward.level?.level > currentLevel.level) {
       toast({ description: t("codequest.levelUp", { level: reward.level.level }) });
+      celebrateLevelUp();
     }
     if (reward.level) setCurrentLevel(reward.level);
     (reward.new_achievements || []).forEach((badge) => {
@@ -129,17 +133,25 @@ export default function QuestLevel() {
         ← {t("codequest.backToMap")}
       </Link>
 
-      <div className="mt-4 flex items-start gap-3">
-        <div className={`w-12 h-12 rounded-full flex items-center justify-center font-heading font-extrabold shrink-0 ${boss ? "bg-destructive/10 text-destructive" : "bg-accent text-accent-foreground"}`}>
-          {boss ? <Flame className="w-6 h-6" /> : level.order}
-        </div>
-        <div className="min-w-0">
-          <h1 className="font-heading font-extrabold text-2xl">{level.title}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {language.name}
-            {level.tier ? ` · ${level.tier}` : ""}
-            {total ? ` · ${t("codequest.doneCount", { done, total })}` : ""}
-          </p>
+      <div className="mt-4 rounded-3xl border-2 border-border bg-gradient-to-br from-primary/10 via-card to-gem/10 p-5">
+        <div className="flex items-start gap-4">
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-game font-extrabold text-xl shrink-0 text-white ${boss ? "bg-gradient-to-br from-destructive to-streak" : "bg-gradient-to-br from-primary to-gem"}`}>
+            {boss ? <Flame className="w-7 h-7" /> : level.order}
+          </div>
+          <div className="min-w-0">
+            <h1 className="font-game font-extrabold text-2xl sm:text-3xl">{level.title}</h1>
+            <div className="flex flex-wrap items-center gap-2 mt-2">
+              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">{language.name}</span>
+              {level.tier && (
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">{level.tier}</span>
+              )}
+              {total > 0 && (
+                <span className="text-xs font-game font-extrabold px-2.5 py-1 rounded-full bg-xp/15 text-xp">
+                  {t("codequest.doneCount", { done, total })}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -153,15 +165,11 @@ export default function QuestLevel() {
           ))}
         </div>
       )}
-      {total > 0 && (
-        <div className="h-1.5 rounded-full bg-secondary mt-4 overflow-hidden">
-          <div className="h-full bg-primary" style={{ width: `${pct}%` }} />
-        </div>
-      )}
+      {total > 0 && <XpBar value={pct} size="md" className="mt-4" />}
 
       {total > 0 && done === total && (
-        <div className="mt-4 border border-success/40 bg-success/10 rounded-lg p-4">
-          <p className="font-semibold text-success">{pickMessage(LEVEL_CLEARED_MESSAGES, levelOrder)}</p>
+        <div className="mt-4 rounded-2xl border-2 border-success/50 bg-gradient-to-r from-success/15 to-xp/10 p-5 animate-game-pop motion-reduce:animate-none">
+          <p className="font-game font-extrabold text-xl text-success">🎉 {pickMessage(LEVEL_CLEARED_MESSAGES, levelOrder)}</p>
           <p className="text-sm text-muted-foreground mt-1">
             {next
               ? t("codequest.nextUp", { level: next.title })
@@ -171,7 +179,7 @@ export default function QuestLevel() {
       )}
 
       <section className="mt-8">
-        <h2 className="font-heading font-bold text-lg">{t("codequest.learningMode")}</h2>
+        <h2 className="font-game font-extrabold text-xl">{t("codequest.learningMode")}</h2>
         {lessons.length === 0 ? (
           <p className="text-sm text-muted-foreground mt-2">{t("codequest.noLessons")}</p>
         ) : (
@@ -189,7 +197,7 @@ export default function QuestLevel() {
       </section>
 
       <section className="mt-8">
-        <h2 className="font-heading font-bold text-lg">{t("codequest.practice")}</h2>
+        <h2 className="font-game font-extrabold text-xl">{t("codequest.practice")}</h2>
         {challenges.length === 0 ? (
           <p className="text-sm text-muted-foreground mt-2">{t("codequest.noChallenges")}</p>
         ) : (

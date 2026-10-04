@@ -50,14 +50,14 @@ export default function LanguageCatalog({ languages, progress, activeSlug, onOpe
     <div className="mt-4">
       {popular.length > 0 && (
         <div>
-          <h3 className="font-heading font-bold text-sm">🔥 Popular right now</h3>
+          <h3 className="font-game font-extrabold text-lg">🔥 Popular right now</h3>
           <div className="flex flex-wrap gap-2 mt-2">
             {popular.map((language) => (
               <button
                 key={language.id}
                 type="button"
                 onClick={() => jumpTo(language)}
-                className="inline-flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-full bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                className="inline-flex items-center gap-1.5 text-sm font-bold px-3 py-1.5 rounded-full border-2 border-border bg-card hover:border-primary/50 hover:text-primary transition-all active:scale-[.97]"
               >
                 <span aria-hidden="true">{language.icon}</span> {language.name}
               </button>
@@ -71,8 +71,12 @@ export default function LanguageCatalog({ languages, progress, activeSlug, onOpe
         if (!group.length) return null;
         return (
           <div key={category.name} className="mt-8">
-            <h3 className="font-heading font-bold text-lg">
-              <span aria-hidden="true">{category.icon}</span> {category.name}
+            <h3 className="flex items-center gap-2 font-game font-extrabold text-xl">
+              <span className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center text-lg" aria-hidden="true">
+                {category.icon}
+              </span>
+              {category.name}
+              <span className="text-xs font-bold text-muted-foreground">{group.length}</span>
             </h3>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">{group.map(card)}</div>
           </div>

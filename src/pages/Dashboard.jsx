@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, Bookmark, CheckCircle2, Code2, Hammer, TrendingUp, Trophy } from "lucide-react";
+import { BookOpen, Bookmark, CheckCircle2, Code2, Flame, Hammer, Play, Star, TrendingUp, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
+import StatTile from "@/components/quest/StatTile";
+import XpBar from "@/components/quest/XpBar";
+import { levelName } from "@/lib/questLevels";
 
 function StatCard({ icon: Icon, label, value, to }) {
   return (
-    <Link to={to} className="bg-card border border-border rounded-lg p-5 hover:border-primary/40 transition-colors">
-      <Icon className="w-5 h-5 text-primary mb-2" />
-      <p className="text-2xl font-heading font-extrabold">{value}</p>
+    <Link
+      to={to}
+      className="rounded-2xl border-2 border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-game"
+    >
+      <span className="inline-flex w-10 h-10 items-center justify-center rounded-2xl bg-primary/15 text-primary mb-2">
+        <Icon className="w-5 h-5" />
+      </span>
+      <p className="text-2xl font-game font-extrabold">{value}</p>
       <p className="text-sm text-muted-foreground">{label}</p>
     </Link>
   );
@@ -57,14 +65,32 @@ export default function Dashboard() {
       </div>
 
       {quest && (
-        <Link to="/codequest" className="mt-6 flex items-center justify-between gap-4 bg-card border border-border rounded-lg p-5 hover:border-primary/40">
-          <div>
-            <p className="font-heading font-bold">CodeQuest</p>
-            <p className="text-sm text-muted-foreground">
-              Level {questLevel?.level ?? 1} · {quest.xp ?? 0} XP · {quest.streak_days ?? 0} day streak · {quest.challenges_solved ?? 0} challenges solved
-            </p>
+        <Link
+          to="/codequest"
+          className="mt-6 block rounded-3xl border-2 border-border bg-gradient-to-br from-primary/10 via-card to-xp/10 p-5 transition-colors hover:border-primary/60"
+        >
+          <div className="flex items-center gap-4 flex-wrap">
+            <span className="w-14 h-14 rounded-2xl bg-gradient-to-br from-coin to-streak text-white font-game font-extrabold text-2xl flex items-center justify-center shrink-0 shadow-game-coin">
+              {questLevel?.level ?? 1}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="font-game font-extrabold text-lg leading-tight">
+                CodeQuest · {levelName(questLevel?.level ?? 1)}
+              </p>
+              <XpBar value={questLevel?.progressPct} size="sm" className="mt-2" />
+              <p className="text-xs text-muted-foreground mt-1.5">
+                {questLevel?.xpIntoLevel ?? 0} / {questLevel?.xpForNextLevel ?? 0} XP · {quest.xp ?? 0} XP total
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-xp text-primary-foreground font-game font-bold px-4 py-2 shrink-0">
+              <Play className="w-4 h-4" /> Continue
+            </span>
           </div>
-          <span className="text-sm font-semibold text-primary shrink-0">Continue →</span>
+          <div className="grid grid-cols-3 gap-3 mt-4">
+            <StatTile icon={Star} tone="xp" value={quest.xp ?? 0} label="XP" />
+            <StatTile icon={Flame} tone="streak" value={quest.streak_days ?? 0} label="day streak" />
+            <StatTile icon={Trophy} tone="success" value={quest.challenges_solved ?? 0} label="challenges solved" />
+          </div>
         </Link>
       )}
 
