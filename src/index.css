@@ -38,6 +38,9 @@
     --brand-navy: 220 53% 8%;
     --brand-navy-soft: 221 43% 14%;
     --brand-cyan: 195 65% 62%;
+    /* Text on the branded navy auth backdrop: always light, in both themes. */
+    --brand-ink: 0 0% 100%;
+    --brand-ink-soft: 214 32% 88%;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -76,6 +79,8 @@
     --brand-navy: 220 53% 8%;
     --brand-navy-soft: 221 43% 14%;
     --brand-cyan: 195 65% 62%;
+    --brand-ink: 0 0% 100%;
+    --brand-ink-soft: 214 32% 88%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;

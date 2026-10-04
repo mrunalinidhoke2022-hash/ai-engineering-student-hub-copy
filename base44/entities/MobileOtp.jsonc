@@ -1,0 +1,71 @@
+{
+  "name": "MobileOtp",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "account_id": {
+      "type": "string"
+    },
+    "mobile_key": {
+      "type": "string"
+    },
+    "otp_salt": {
+      "type": "string"
+    },
+    "otp_hash": {
+      "type": "string"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "attempts": {
+      "type": "number",
+      "default": 0
+    },
+    "locked_until": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "account_id",
+    "mobile_key",
+    "otp_salt",
+    "otp_hash",
+    "expires_at"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

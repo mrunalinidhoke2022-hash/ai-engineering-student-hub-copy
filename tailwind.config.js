@@ -47,7 +47,9 @@ module.exports = {
   			brand: {
   				navy: 'hsl(var(--brand-navy))',
   				'navy-soft': 'hsl(var(--brand-navy-soft))',
-  				cyan: 'hsl(var(--brand-cyan))'
+  				cyan: 'hsl(var(--brand-cyan))',
+  				ink: 'hsl(var(--brand-ink))',
+  				'ink-soft': 'hsl(var(--brand-ink-soft))'
   			},
   			chart: {
   				'1': 'hsl(var(--chart-1))',

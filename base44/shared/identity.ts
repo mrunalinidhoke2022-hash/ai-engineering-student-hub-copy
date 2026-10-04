@@ -74,6 +74,23 @@ export const findNameConflict = async (base44, fullName) => {
   return findOne(base44, { name_key: key });
 };
 
+// A chosen User ID. Stored in the same uppercase, hyphen-separated form the generated ones use,
+// so 'sanchita chimate' and 'SANCHITA-CHIMATE' are one and the same name and cannot both exist.
+export const normalizeUsername = (value) => buildUserId(value);
+
+export const validateUsername = (value) => {
+  const key = normalizeUsername(value);
+  return /^[A-Z0-9][A-Z0-9-]{2,39}$/.test(key);
+};
+
+// The username someone typed may already belong to another profile.
+export const findUsernameConflict = async (base44, username, ignoreId) => {
+  const key = normalizeUsername(username);
+  if (!key) return null;
+  const record = await findOne(base44, { user_id: key });
+  return record && record.id !== ignoreId ? record : null;
+};
+
 // SANCHITA-BHASKAR-CHIMTE-001, incrementing only if that exact User ID is taken.
 export const nextUserId = async (base44, fullName) => {
   const base = buildUserId(fullName) || "STUDENT";

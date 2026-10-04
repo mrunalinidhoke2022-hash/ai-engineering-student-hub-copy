@@ -5,8 +5,22 @@
 // Counters live in the RequestThrottle entity and are keyed by a salted hash, so no IP
 // address and no identity value (email, mobile) is ever stored.
 
+import { secrets } from 'base44:runtime';
+
+// The salt never lives in the source: a literal committed here would let anyone who reads the
+// app's code brute-force candidate emails and mobile numbers against the hashes stored in
+// RequestThrottle. When the dedicated secret is not set the app's own id is used instead, so
+// these pre-login endpoints keep working rather than failing closed on a missing secret.
+const saltMaterial = () => {
+  try {
+    return secrets.get('THROTTLE_SALT') || secrets.get('BASE44_APP_ID') || 'local';
+  } catch {
+    return 'local';
+  }
+};
+
 const hashKey = async (value) => {
-  const bytes = new TextEncoder().encode(`engineering-hub:${value}`);
+  const bytes = new TextEncoder().encode(`${saltMaterial()}:${value}`);
   const digest = await crypto.subtle.digest('SHA-256', bytes);
   return Array.from(new Uint8Array(digest))
     .map((byte) => byte.toString(16).padStart(2, '0'))
