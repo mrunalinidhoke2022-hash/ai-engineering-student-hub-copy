@@ -38,15 +38,18 @@ export const clientIp = (req) => {
 };
 
 // Records one attempt and reports whether the caller is still inside the limit. The window is
-// rolled and the count is raised with single conditional writes, so parallel requests can never
-// undercount their way past the limit.
+// rolled and the count is raised with single conditional writes, and the very first hit for a
+// key charges the whole parallel burst to one row, so parallel requests can never undercount
+// their way past the limit — neither once a counter exists nor while it is first being created.
 export const throttle = async (base44, bucket, value, limit, windowSeconds) => {
   const keyHash = await hashKey(`${bucket}:${value}`);
   const windowMs = windowSeconds * 1000;
   const now = Date.now();
   const counters = base44.asServiceRole.entities.RequestThrottle;
 
-  const page = await counters.filter({ key_hash: keyHash }, { limit: 1 });
+  // Sorted read: every request for a key settles on the same (oldest) row, so a leftover
+  // duplicate row can never hand out a second, parallel budget.
+  const page = await counters.filter({ key_hash: keyHash }, { sort: 'created_date', limit: 1 });
   const record = page.items[0];
 
   if (!record) {
@@ -56,6 +59,21 @@ export const throttle = async (base44, bucket, value, limit, windowSeconds) => {
       window_started_at: new Date(now).toISOString(),
       count: 1,
     });
+
+    // Parallel requests for a key that had no counter yet all reach this point before any row
+    // exists, so more than one row can be created for it. Collapse them onto the oldest row and
+    // charge the whole burst to it: without this each parallel request would buy its own free
+    // attempt and a concurrent burst could walk straight past the limit.
+    const created = (await counters.filter({ key_hash: keyHash }, { sort: 'created_date', limit: 50 })).items || [];
+    if (created.length > 1) {
+      await counters.deleteMany({ id: { $in: created.slice(1).map((row) => row.id) } });
+      const charged = await counters.updateMany(
+        { id: created[0].id, count: { $lt: limit } },
+        { $inc: { count: created.length - 1 } }
+      );
+      if (!charged?.updated) return { allowed: false, retryAfterSeconds: windowSeconds };
+    }
+
     return { allowed: true };
   }
 
