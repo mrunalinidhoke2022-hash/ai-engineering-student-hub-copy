@@ -73,6 +73,15 @@
       "type": "string",
       "format": "date"
     },
+    "pricing_verified": {
+      "type": "string",
+      "format": "date",
+      "description": "Set only when pricing itself was checked, so the page never implies a price is current when only other details were verified."
+    },
+    "source_url": {
+      "type": "string",
+      "description": "The official source this entry was last verified against."
+    },
     "what_is": {
       "type": "string"
     },

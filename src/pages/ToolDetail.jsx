@@ -3,6 +3,8 @@ import { useParams, Link } from "react-router-dom";
 import { ExternalLink, FileText, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BookmarkButton from "@/components/tools/BookmarkButton";
+import ToolVerificationNote from "@/components/tools/ToolVerificationNote";
+import ReportToolDialog from "@/components/tools/ReportToolDialog";
 import EmptyState from "@/components/common/EmptyState";
 import { base44 } from "@/api/base44Client";
 
@@ -54,10 +56,15 @@ export default function ToolDetail() {
             <Button className="gap-1.5">Official Website <ExternalLink className="w-3.5 h-3.5" /></Button>
           </a>
           <BookmarkButton itemType="tool" itemId={tool.id} itemName={tool.name} />
+          <ReportToolDialog tool={tool} />
         </div>
       </div>
 
       <p className="text-muted-foreground mt-4">{tool.description}</p>
+
+      <div className="mt-4">
+        <ToolVerificationNote tool={tool} />
+      </div>
 
       <div className="bg-card border border-border rounded-lg p-6 mt-6">
         <Section title="What is this tool?">{tool.what_is}</Section>

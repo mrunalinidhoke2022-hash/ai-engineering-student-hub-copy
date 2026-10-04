@@ -43,6 +43,7 @@ const Team = lazy(() => import('@/pages/Team'));
 const Workspace = lazy(() => import('@/pages/Workspace'));
 const About = lazy(() => import('@/pages/About'));
 const Contact = lazy(() => import('@/pages/Contact'));
+const ContentUpdates = lazy(() => import('@/pages/ContentUpdates'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -97,6 +98,7 @@ const AuthenticatedApp = () => {
           <Route path="/toolkit" element={<Toolkit />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/content-updates" element={<ContentUpdates />} />
           <Route path="/search" element={<Search />} />
           <Route path="/guide/:slug" element={<TopicGuide />} />
           <Route path="/team" element={<Team />} />

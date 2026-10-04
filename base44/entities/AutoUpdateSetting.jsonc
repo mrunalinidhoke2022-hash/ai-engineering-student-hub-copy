@@ -1,0 +1,87 @@
+{
+  "name": "AutoUpdateSetting",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "label": {
+      "type": "string",
+      "default": "default"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "frequency_hours": {
+      "type": "number",
+      "default": 24
+    },
+    "weekly_categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "auto_publish_low_risk": {
+      "type": "boolean",
+      "default": false
+    },
+    "notify_students": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_success_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "next_run_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_error": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "last_run_summary": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "updated_by": {
+      "type": "string",
+      "maxLength": 160
+    }
+  },
+  "required": [
+    "label"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

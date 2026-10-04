@@ -1,0 +1,191 @@
+{
+  "name": "ContentUpdate",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "new_tool",
+        "tool_update",
+        "price_change",
+        "learning_resource",
+        "hackathon",
+        "announcement"
+      ],
+      "default": "tool_update"
+    },
+    "risk": {
+      "type": "string",
+      "enum": [
+        "low",
+        "high"
+      ],
+      "default": "low"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "updated",
+        "needs_review",
+        "verified",
+        "published",
+        "rejected"
+      ],
+      "default": "new"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 160
+    },
+    "target_name": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "target_entity": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "target_id": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "change_note": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "pricing_note": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "source_name": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "source_url": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "discovered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reviewed_by": {
+      "type": "string",
+      "maxLength": 160
+    },
+    "review_note": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "confidence": {
+      "type": "number",
+      "default": 0
+    },
+    "previous_value": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "proposed": {
+      "type": "string",
+      "maxLength": 3000
+    },
+    "applied_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "string"
+          },
+          "by": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "kind",
+    "title",
+    "source_url"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.status": "published"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

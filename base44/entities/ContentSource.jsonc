@@ -1,0 +1,104 @@
+{
+  "name": "ContentSource",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "name": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "rss",
+        "api"
+      ],
+      "default": "rss"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "ai_tools",
+        "developer_tools",
+        "coding_platforms",
+        "learning_resources",
+        "engineering_technology",
+        "hackathons",
+        "competitions",
+        "announcements",
+        "tutorials"
+      ],
+      "default": "ai_tools"
+    },
+    "trust_level": {
+      "type": "string",
+      "enum": [
+        "official",
+        "high",
+        "medium"
+      ],
+      "default": "official"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "last_fetched_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_status": {
+      "type": "string",
+      "enum": [
+        "never",
+        "ok",
+        "error"
+      ],
+      "default": "never"
+    },
+    "last_error": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "fetched_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "name",
+    "url",
+    "category"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

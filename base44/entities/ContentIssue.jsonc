@@ -1,0 +1,89 @@
+{
+  "name": "ContentIssue",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "tool_id": {
+      "type": "string"
+    },
+    "tool_name": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "tool_slug": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "issue_type": {
+      "type": "string",
+      "enum": [
+        "broken_link",
+        "incorrect_pricing",
+        "incorrect_description",
+        "tool_unavailable",
+        "incorrect_information"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "reporter_name": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "in_progress",
+        "resolved",
+        "rejected"
+      ],
+      "default": "new"
+    },
+    "admin_note": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "tool_id",
+    "tool_name",
+    "issue_type"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

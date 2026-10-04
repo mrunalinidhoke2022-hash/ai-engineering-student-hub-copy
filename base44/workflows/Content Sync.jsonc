@@ -1,0 +1,47 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "30 3 * * *",
+      "one_time_date": null,
+      "timezone": "Asia/Calcutta",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Checks the admin-approved public sources once a day and stages anything new for review in the Content Updates dashboard.",
+  "name": "Content Sync",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "content_sync",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "check_sources": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "syncAITools",
+            "args": {
+              "scheduled_sync": true
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Check the approved sources",
+            "description": "Stage anything new for review"
+          }
+        }
+      }
+    ]
+  }
+}
