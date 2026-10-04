@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { AlertTriangle, Loader2, Lock } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Lock, Loader2, AlertTriangle } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
+import PasswordField from "@/components/auth/PasswordField";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { describeError } from "@/lib/authErrors";
+import { passwordMeetsRules } from "@/lib/registration";
 
 export default function ResetPassword() {
+  const { t } = useLanguage();
   const [searchParams] = useSearchParams();
   const resetToken = searchParams.get("token");
 
@@ -19,8 +22,12 @@ export default function ResetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    if (!passwordMeetsRules(newPassword)) {
+      setError(t("register.password.errWeak"));
+      return;
+    }
     if (newPassword !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("register.password.errMismatch"));
       return;
     }
     setLoading(true);
@@ -28,7 +35,7 @@ export default function ResetPassword() {
       await base44.auth.resetPassword({ resetToken, newPassword });
       window.location.href = "/login";
     } catch (err) {
-      setError(err.message || "Failed to reset password");
+      setError(describeError(t, err));
     } finally {
       setLoading(false);
     }
@@ -38,74 +45,49 @@ export default function ResetPassword() {
     return (
       <AuthLayout
         icon={AlertTriangle}
-        title="Invalid reset link"
-        subtitle="This password reset link is missing or invalid"
+        title={t("reset.invalidTitle")}
+        subtitle={t("reset.invalidSubtitle")}
         footer={
-          <Link to="/forgot-password" className="text-primary font-medium hover:underline">
-            Request a new link
+          <Link to="/forgot-password" className="font-medium text-brand-ink hover:underline">
+            {t("reset.requestNew")}
           </Link>
         }
       >
-        <p className="text-sm text-foreground text-center">
-          The link you used appears to be incomplete. Please request a new password reset email.
-        </p>
+        <p className="text-center text-sm text-foreground">{t("reset.invalidDesc")}</p>
       </AuthLayout>
     );
   }
 
   return (
-    <AuthLayout
-      icon={Lock}
-      title="New password"
-      subtitle="Enter your new password below"
-    >
-      {error && (
-        <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+    <AuthLayout icon={Lock} title={t("reset.title")} subtitle={t("reset.subtitle")}>
+      {error ? (
+        <div className="mb-4 rounded-lg bg-destructive/10 p-3 text-sm text-destructive" role="alert">
           {error}
         </div>
-      )}
+      ) : null}
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="password">New Password</Label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
-            <Input
-              id="password"
-              type="password"
-              autoComplete="new-password"
-              autoFocus
-              placeholder="••••••••"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className="pl-10 h-12"
-              required
-            />
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="confirm">Confirm Password</Label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
-            <Input
-              id="confirm"
-              type="password"
-              autoComplete="new-password"
-              placeholder="••••••••"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="pl-10 h-12"
-              required
-            />
-          </div>
-        </div>
-        <Button type="submit" className="w-full h-12 font-medium" disabled={loading}>
+        <PasswordField
+          id="password"
+          label={t("common.password")}
+          value={newPassword}
+          onChange={setNewPassword}
+          autoFocus
+          showRules
+        />
+        <PasswordField
+          id="confirm"
+          label={t("common.confirmPassword")}
+          value={confirmPassword}
+          onChange={setConfirmPassword}
+        />
+        <Button type="submit" className="h-12 w-full font-medium" disabled={loading}>
           {loading ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Resetting...
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {t("reset.submitting")}
             </>
           ) : (
-            "Reset password"
+            t("reset.submit")
           )}
         </Button>
       </form>

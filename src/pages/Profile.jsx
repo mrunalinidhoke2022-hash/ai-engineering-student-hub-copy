@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useToast } from "@/components/ui/use-toast";
 import IdentityPanel from "@/components/profile/IdentityPanel";
+import SecurityPanel from "@/components/profile/SecurityPanel";
 
 const YEARS = ["1st Year", "2nd Year", "3rd Year", "Final Year", "Graduate"];
 
@@ -54,6 +55,7 @@ export default function Profile() {
 
       <div className="mt-6">
         <IdentityPanel />
+        <SecurityPanel />
       </div>
 
       <div className="bg-card border border-border rounded-lg p-6 mt-6">

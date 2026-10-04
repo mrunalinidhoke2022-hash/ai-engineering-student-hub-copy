@@ -13,10 +13,12 @@ export const normalizeMobile = (value) => {
   return digits.length > 10 ? digits.slice(-10) : digits;
 };
 
+// Hyphens are kept, not stripped: spaces become hyphens, so normalizing twice — which happens
+// whenever a value is checked after it was already normalized — must give the same answer.
 export const buildUserId = (value) =>
   normalizeName(value)
     .toUpperCase()
-    .replace(/[^A-Z0-9 ]/g, "")
+    .replace(/[^A-Z0-9 -]/g, "")
     .trim()
     .replace(/\s+/g, "-");
 
@@ -74,8 +76,10 @@ export const findNameConflict = async (base44, fullName) => {
   return findOne(base44, { name_key: key });
 };
 
-// A chosen User ID. Stored in the same uppercase, hyphen-separated form the generated ones use,
-// so 'sanchita chimate' and 'SANCHITA-CHIMATE' are one and the same name and cannot both exist.
+// A chosen User ID, in the same uppercase, hyphen-separated form the generated ones use
+// ('sanchita chimate' and 'SANCHITA-CHIMATE' are one and the same handle, so both cannot exist).
+// Normalizing any string twice returns it unchanged, so a value that was already normalized can
+// still be compared safely.
 export const normalizeUsername = (value) => buildUserId(value);
 
 export const validateUsername = (value) => {

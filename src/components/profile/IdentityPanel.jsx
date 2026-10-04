@@ -19,6 +19,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { validatePhoto, formatMobile, isValidMobile } from "@/lib/registration";
+import { describeError } from "@/lib/authErrors";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 function VerifiedBadge({ verified }) {
@@ -93,7 +94,7 @@ export default function IdentityPanel() {
         photo_url,
       });
       if (res.data?.error) {
-        setError(res.data.error);
+        setError(describeError(t, res.data));
         return;
       }
       setProfile(res.data.profile);
@@ -112,7 +113,7 @@ export default function IdentityPanel() {
     try {
       const res = await base44.functions.invoke("deleteMyAccount", {});
       if (res.data?.error) {
-        setError(res.data.error);
+        setError(describeError(t, res.data));
         setDeleting(false);
         return;
       }
