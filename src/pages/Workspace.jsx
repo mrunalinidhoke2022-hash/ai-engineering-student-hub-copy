@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
+import GitHubCommitFeed from "@/components/workspace/GitHubCommitFeed";
 import TeamCard from "@/components/workspace/TeamCard";
 import TeamFormDialog from "@/components/workspace/TeamFormDialog";
 import TeamMembersPanel from "@/components/workspace/TeamMembersPanel";
@@ -156,6 +157,8 @@ export default function Workspace() {
           <Plus className="w-4 h-4" /> New team
         </Button>
       </div>
+
+      <GitHubCommitFeed />
 
       <section className="mt-8">
         <h2 className="font-heading font-bold text-lg">Your teams</h2>

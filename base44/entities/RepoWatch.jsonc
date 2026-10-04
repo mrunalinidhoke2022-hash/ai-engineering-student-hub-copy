@@ -1,0 +1,55 @@
+{
+  "name": "RepoWatch",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "maxLength": 140
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "owner": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "html_url": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "private": {
+      "type": "boolean",
+      "default": false
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "added_by": {
+      "type": "string",
+      "maxLength": 160
+    }
+  },
+  "required": [
+    "full_name"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
